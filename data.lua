@@ -1,0 +1,2 @@
+-- Data stage for Interplanetary Logistics Network
+-- This file will contain prototype definitions when features are implemented

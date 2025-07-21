@@ -1,0 +1,12 @@
+{
+  "name": "interplanetary-logistics-network",
+  "version": "0.1.0",
+  "title": "Interplanetary Logistics Network",
+  "description": "Advanced logistics network for managing resources across planets and space platforms in Factorio Space Age.",
+  "author": "luan",
+  "contact": "https://github.com/luan/interplanetary-logistics-network",
+  "homepage": "https://github.com/luan/interplanetary-logistics-network",
+  "factorio_version": "2.0",
+  "dependencies": ["base >= 2.0.11", "space-age >= 2.0.11"]
+}
+
