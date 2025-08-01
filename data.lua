@@ -306,9 +306,10 @@ data:extend({
     name = "interplanetary-provider-chest",
     enabled = true,
     ingredients = {
-      {type = "item", name = "passive-provider-chest", amount = 1},
-      {type = "item", name = "processing-unit", amount = 5},
-      {type = "item", name = "steel-plate", amount = 10}
+      {type = "item", name = "passive-provider-chest", amount = 50},
+      {type = "item", name = "processing-unit", amount = 250},
+      {type = "item", name = "steel-plate", amount = 500},
+      {type = "item", name = "refined-concrete", amount = 200}
     },
     results = {{type = "item", name = "interplanetary-provider-chest", amount = 1}}
   },
@@ -318,9 +319,10 @@ data:extend({
     name = "interplanetary-requester-chest",
     enabled = true,
     ingredients = {
-      {type = "item", name = "requester-chest", amount = 1},
-      {type = "item", name = "processing-unit", amount = 5},
-      {type = "item", name = "steel-plate", amount = 10}
+      {type = "item", name = "requester-chest", amount = 50},
+      {type = "item", name = "processing-unit", amount = 250},
+      {type = "item", name = "steel-plate", amount = 500},
+      {type = "item", name = "refined-hazard-concrete", amount = 200}
     },
     results = {{type = "item", name = "interplanetary-requester-chest", amount = 1}}
   },
@@ -417,8 +419,8 @@ data:extend({
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
-      input_flow_limit = "10MW",
-      buffer_capacity = "10MJ"
+      input_flow_limit = "100MW",
+      buffer_capacity = "100MJ"
     },
     energy_usage = "0W",
     energy_production = "0W",
@@ -443,8 +445,8 @@ data:extend({
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
-      input_flow_limit = "10MW",
-      buffer_capacity = "10MJ"
+      input_flow_limit = "100MW",
+      buffer_capacity = "100MJ"
     },
     energy_usage = "0W",
     energy_production = "0W",

@@ -43,20 +43,31 @@ end)
 -- Power consumption settings with speed scaling
 local function get_power_settings()
   local speed_setting = settings.startup["interplanetary-transfer-speed"].value
+  local power_setting = settings.startup["interplanetary-power-cost"].value
+
   local speed_configs = {
-    ["ultra-slow"] = {duration = 16 * 60, power_multiplier = 0.625}, -- 16s, 62.5% power (50MJ)
-    ["slow"] = {duration = 8 * 60, power_multiplier = 0.75},         -- 8s, 75% power (60MJ)
-    ["normal"] = {duration = 4 * 60, power_multiplier = 1.0},        -- 4s, 100% power (80MJ)
-    ["fast"] = {duration = 2 * 60, power_multiplier = 2.0},          -- 2s, 200% power (160MJ)
-    ["ultra-fast"] = {duration = 1 * 60, power_multiplier = 5.0}     -- 1s, 500% power (400MJ)
+    ["ultra-slow"] = {duration = 16 * 60, power_multiplier = 0.625}, -- 16s, 62.5% power
+    ["slow"] = {duration = 8 * 60, power_multiplier = 0.75},         -- 8s, 75% power
+    ["normal"] = {duration = 4 * 60, power_multiplier = 1.0},        -- 4s, 100% power
+    ["fast"] = {duration = 2 * 60, power_multiplier = 2.0},          -- 2s, 200% power
+    ["ultra-fast"] = {duration = 1 * 60, power_multiplier = 5.0}     -- 1s, 500% power
   }
 
-  local config = speed_configs[speed_setting] or speed_configs["normal"]
+  local power_configs = {
+    ["free"] = {sending = 0, receiving = 0},           -- 0MW / 0MW
+    ["cheap"] = {sending = 4000, receiving = 1000},    -- 4MW / 1MW
+    ["normal"] = {sending = 16000, receiving = 4000},  -- 16MW / 4MW (default)
+    ["expensive"] = {sending = 40000, receiving = 10000}, -- 40MW / 10MW
+    ["extreme"] = {sending = 80000, receiving = 20000}    -- 80MW / 20MW
+  }
+
+  local speed_config = speed_configs[speed_setting] or speed_configs["normal"]
+  local power_config = power_configs[power_setting] or power_configs["normal"]
 
   return {
-    receiving_power = settings.startup["interplanetary-receiving-power"].value * 1000 * config.power_multiplier,
-    sending_power = settings.startup["interplanetary-sending-power"].value * 1000 * config.power_multiplier,
-    transfer_duration = config.duration
+    receiving_power = power_config.receiving * 1000 * speed_config.power_multiplier,
+    sending_power = power_config.sending * 1000 * speed_config.power_multiplier,
+    transfer_duration = speed_config.duration
   }
 end
 
@@ -276,8 +287,10 @@ script.on_nth_tick(1, function()
       if provider_interface and provider_interface.valid and buffer_interface and buffer_interface.valid then
         local provider_energy = provider_interface.energy or 0
         local buffer_energy = buffer_interface.energy or 0
+        -- game.print("Processing transfer " .. transfer_id .. " - Provider energy: " .. provider_energy .. ", Buffer energy: " .. buffer_energy)
 
 
+        -- game.print("Power needed - Sending: " .. transfer_data.sending_power_needed .. ", Receiving: " .. transfer_data.receiving_power_needed)
         if provider_energy >= transfer_data.sending_power_needed and buffer_energy >= transfer_data.receiving_power_needed then
           -- Consume power
           provider_interface.energy = provider_energy - transfer_data.sending_power_needed
@@ -285,10 +298,13 @@ script.on_nth_tick(1, function()
 
           -- Transfer items
           local removed = transfer_data.provider.remove_item{name = transfer_data.item_name, count = transfer_data.stack_size} or 0
+          -- game.print("Attempting to transfer " .. transfer_data.stack_size .. " " .. transfer_data.item_name .. " - Removed: " .. removed)
           if removed == transfer_data.stack_size then
             local inserted = transfer_data.buffer.insert{name = transfer_data.item_name, count = transfer_data.stack_size} or 0
+            -- game.print("Inserted: " .. inserted .. " into buffer")
             if inserted == transfer_data.stack_size then
               storage.transfer_cooldowns[transfer_data.buffer_id] = game.tick + transfer_data.transfer_duration
+              -- game.print("Transfer successful! Cooldown set.")
 
               -- Mark both chests as active for transfer duration
               local provider_unit = transfer_data.provider.unit_number
@@ -315,6 +331,7 @@ script.on_nth_tick(1, function()
       end
 
       -- Clean up
+      -- game.print("Cleaning up transfer " .. transfer_id)
       if provider_interface and provider_interface.valid then provider_interface.destroy() end
       if buffer_interface and buffer_interface.valid then buffer_interface.destroy() end
       storage.pending_transfers[transfer_id] = nil
@@ -378,16 +395,27 @@ script.on_nth_tick(60, function()
                   local current = buffer.get_item_count(item_name) or 0
                   local needed = requested - current
                   local stack_size = prototypes.item[item_name].stack_size
+                  -- game.print("Buffer " .. buffer.unit_number .. " needs " .. needed .. " " .. item_name .. " (has " .. current .. ", wants " .. requested .. ")")
 
                   if needed >= stack_size then
-                    -- Look for this item in interplanetary providers only
-                    for _, provider in pairs(all_providers) do
-                      if provider and provider.valid and provider ~= buffer then
-                        local available = provider.get_item_count(item_name) or 0
-                        if available >= stack_size then
-                          -- Apply quality efficiency bonuses
-                          local provider_efficiency = get_quality_efficiency(provider)
-                          local buffer_efficiency = get_quality_efficiency(buffer)
+                    -- Check if there's already a pending transfer for this buffer
+                    local has_pending_transfer = false
+                    for _, transfer_data in pairs(storage.pending_transfers) do
+                      if transfer_data.buffer_id == buffer_id then
+                        has_pending_transfer = true
+                        break
+                      end
+                    end
+
+                    if not has_pending_transfer then
+                      -- Look for this item in interplanetary providers only
+                      for _, provider in pairs(all_providers) do
+                        if provider and provider.valid and provider ~= buffer then
+                          local available = provider.get_item_count(item_name) or 0
+                          if available >= stack_size then
+                            -- Apply quality efficiency bonuses
+                            local provider_efficiency = get_quality_efficiency(provider)
+                            local buffer_efficiency = get_quality_efficiency(buffer)
 
                           -- Apply speed bonuses (quality + research)
                           local provider_speed_bonus = get_quality_speed_bonus(provider)
@@ -440,6 +468,7 @@ script.on_nth_tick(60, function()
                           end
                         end
                       end
+                    end
                     end
                   end
                 end

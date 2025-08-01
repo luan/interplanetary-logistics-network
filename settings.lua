@@ -1,21 +1,11 @@
 data:extend({
   {
-    type = "int-setting",
-    name = "interplanetary-receiving-power",
+    type = "string-setting",
+    name = "interplanetary-power-cost",
     setting_type = "startup",
-    default_value = 4000,
-    minimum_value = 0,
-    maximum_value = 50000,
+    default_value = "normal",
+    allowed_values = {"free", "cheap", "normal", "expensive", "extreme"},
     order = "a"
-  },
-  {
-    type = "int-setting",
-    name = "interplanetary-sending-power",
-    setting_type = "startup",
-    default_value = 16000,
-    minimum_value = 0,
-    maximum_value = 50000,
-    order = "b"
   },
   {
     type = "string-setting",
@@ -23,6 +13,6 @@ data:extend({
     setting_type = "startup",
     default_value = "normal",
     allowed_values = {"ultra-slow", "slow", "normal", "fast", "ultra-fast"},
-    order = "c"
+    order = "b"
   }
 })
