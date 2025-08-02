@@ -1,61 +1,67 @@
-# 🚀 Interplanetary Logistics Network
+# Interplanetary Logistics Network
 
-> **Advanced logistics system for seamless resource sharing across planets**
+Advanced logistics system for resource sharing across planets
 
 [![Factorio](https://img.shields.io/badge/Factorio-2.0+-blue.svg)](https://factorio.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 🌟 Overview
+## Overview
 
-The Interplanetary Logistics Network revolutionizes how you manage resources
-across the galaxy. Build specialized logistics chests that automatically
-transfer items between planets and space platforms, creating truly
-interconnected supply chains across the cosmos.
+The Interplanetary Logistics Network adds specialized logistics chests that
+automatically transfer items between planets and space platforms, creating
+interconnected supply chains.
 
-### ✨ Key Features
+### Key Features
 
-- 🏗️ **Seamless Integration**: Works with existing logistic networks
-- ⚡ **Power-Based Balance**: Significant energy costs for interplanetary transfers
-- 🎯 **Quality Progression**: Higher quality chests provide massive bonuses
-- 🧪 **Planetary Research**: Unlock speed improvements by exploring each planet
-- 📊 **Configurable Settings**: Customize speeds and power costs
-- 🎮 **Automatic Operation**: Set requests and let the system handle deliveries
+- **Logistic Integration**: Works with existing logistic networks
+- **Power Requirements**: Energy costs scale with transfer speed
+- **Quality Support**: Higher quality chests reduce power consumption and
+  transfer time
+- **Research Tree**: Speed improvements unlocked through planetary science packs
+- **Configurable Settings**: Adjustable power costs and transfer speeds
+- **Automatic Operation**: Set requests and items transfer automatically
 
----
+## Chest Types
 
-## 📦 Chest Types
+### Interplanetary Provider Chest
 
-### 🔴 **Interplanetary Provider Chest**
+- Provides items to the interplanetary network
+- Items can be requested by any requester chest on other surfaces
+- Quality reduces power consumption and transfer time
 
-- Automatically provides items to the interplanetary network
-- Items can be requested by any requester chest across the galaxy
-- Higher quality = more efficient and faster transfers
+### Interplanetary Requester Chest
 
-### 🔵 **Interplanetary Requester Chest**
+- Configure item requests via logistic slots
+- Receives items from provider chests on any surface
+- Transfers occur independently of local logistics
 
-- Configure specific item requests via logistic slots
-- Automatically receives items from provider chests on any planet
-- Smart delivery prioritizes local logistics first
+## Power & Performance
 
----
+### Energy Costs
 
-## ⚡ Power & Performance
+Power consumption varies based on your settings combination:
 
-### 🔋 **Energy Costs**
+**Power Cost Presets** (Sending MW / Receiving MW):
 
-Default power consumption per stack transfer:
+- **Free**: 0 MW / 0 MW - No power required
+- **Cheap**: 4 MW / 1 MW - For easier gameplay
+- **Normal**: 16 MW / 4 MW - Balanced default
+- **Expensive**: 40 MW / 10 MW - Challenging
+- **Extreme**: 80 MW / 20 MW - Maximum difficulty
 
-| Speed Setting  | Energy Cost | Transfer Time |
-| -------------- | ----------- | ------------- |
-| **Ultra-Slow** | 50 MJ       | 16 seconds    |
-| **Slow**       | 60 MJ       | 8 seconds     |
-| **Normal**     | 80 MJ       | 4 seconds     |
-| **Fast**       | 160 MJ      | 2 seconds     |
-| **Ultra-Fast** | 400 MJ      | 1 second      |
+**Speed Settings** affect both duration and power:
 
-### 💎 **Quality Progression**
+| Speed Setting  | Duration | Power Multiplier | Energy at Normal Cost |
+| -------------- | -------- | ---------------- | --------------------- |
+| **Ultra-Slow** | 16s      | 0.625x           | 50 MJ                 |
+| **Slow**       | 8s       | 0.75x            | 60 MJ                 |
+| **Normal**     | 4s       | 1.0x             | 80 MJ                 |
+| **Fast**       | 2s       | 2.0x             | 160 MJ                |
+| **Ultra-Fast** | 1s       | 5.0x             | 400 MJ                |
 
-Quality provides **dramatic** improvements to both efficiency and speed:
+### Quality Progression
+
+Quality reduces both power consumption and transfer time:
 
 | Quality       | Energy Efficiency | Speed Bonus | Example Cost\* |
 | ------------- | ----------------- | ----------- | -------------- |
@@ -69,12 +75,11 @@ _\*Normal speed setting_
 
 ---
 
-## 🧪 Research Progression
+## Research Progression
 
-Unlock speed improvements by exploring each planet and advancing through
-the research tree:
+Speed improvements are unlocked through planetary science packs:
 
-### 📡 **Technology Tree**
+### Technology Tree
 
 ```text
 Interplanetary Logistics (Base)
@@ -89,107 +94,56 @@ Interplanetary Logistics (Base)
     │   │   │   └─ Speed 4 (+20% faster) ← Promethium Science
 ```
 
-### 🌍 **Planetary Themes**
-
-- **🔌 Fulgora**: Electromagnetic field manipulation
-- **🌱 Gleba**: Bioengineered quantum conduits
-- **❄️ Aquilo**: Cryogenic spacetime stabilization
-- **⚛️ Promethium**: Dimensional rift enhancement
-
-**Total Research Bonus**: 50.9% faster transfers
+Each research tier reduces transfer time by 15-20%, with a total
+possible reduction of 50.9% when all technologies are researched.
 
 ---
 
-## 🎯 Ultimate Performance
+## Performance Summary
 
-### 🏆 **Maximum Efficiency**
+With legendary quality chests and all research:
 
-**Legendary Quality + All Research:**
+- Energy: 24 MJ per stack (70% reduction)
+- Time: 0.78 seconds (80.5% faster)
+- Overall: 31x efficiency improvement
 
-- **24 MJ per stack** (70% energy reduction)
-- **0.78 seconds** transfer time (80.5% faster)
-- **31x better performance** than baseline!
+## Configuration
 
-### ⚖️ **Balanced Progression**
+### Startup Settings
 
-- **Early Game**: Functional but expensive interplanetary logistics
-- **Mid Game**: Research unlocks make transfers more responsive
-- **Late Game**: Quality progression dramatically improves efficiency
-- **End Game**: Lightning-fast, energy-efficient galactic supply chains
+| Setting        | Description                            | Default           |
+| -------------- | -------------------------------------- | ----------------- |
+| Power Cost     | Base power consumption preset          | Normal (16MW/4MW) |
+| Transfer Speed | Transfer duration and power multiplier | Normal (4s)       |
 
----
+### Tips
 
-## 🔧 Configuration
-
-### ⚙️ **Startup Settings**
-
-| Setting             | Description                             | Default   |
-| ------------------- | --------------------------------------- | --------- |
-| **Transfer Speed**  | Choose between Ultra-slow to Ultra-fast | Normal    |
-| **Sending Power**   | Base power for sending items (kW)       | 16,000 kW |
-| **Receiving Power** | Base power for receiving items (kW)     | 4,000 kW  |
-
-### 💡 **Pro Tips**
-
-- Start with **Slow** speed setting to conserve power early game
-- Prioritize **quality** for frequently used logistics routes
-- Use **Fast** settings for critical supply chains once you have abundant power
-- Mix speed settings: fast for essentials, slow for bulk materials
+- Use slower speeds early game to conserve power
+- Prioritize quality upgrades for frequently used routes
+- Increase speed for critical supply chains as power allows
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📋 **Prerequisites**
+### Prerequisites
 
-- Research **Logistic System** technology
-- Have **Space Science Pack** production running
+- Research Logistic System technology
+- Have Space Science Pack production running
 - Establish power generation on target planets/platforms
 
-### 🛠️ **Basic Setup**
+### Basic Setup
 
-1. **Research** "Interplanetary Logistics" technology
-2. **Craft** provider and requester chests using the recipes
-3. **Place** provider chests near item sources
-4. **Configure** requester chests with desired items
-5. **Ensure** adequate power supply for transfers
-6. **Watch** items automatically flow across the galaxy!
+1. Research "Interplanetary Logistics" technology
+2. Craft provider and requester chests
+3. Place provider chests near item sources
+4. Configure requester chests with desired items
+5. Ensure adequate power supply for transfers
+6. Items will transfer automatically between surfaces
 
-### 📈 **Optimization Path**
+### Optimization
 
 1. Start with normal quality chests and default settings
 2. Research speed technologies as you explore planets
 3. Upgrade to higher quality chests for efficiency
-4. Fine-tune speed settings based on power availability
-5. Build legendary chest networks for ultimate performance
-
----
-
-## 🤝 Compatibility
-
-- ✅ **Factorio 2.0+** required
-- ✅ Compatible with **Quality** system
-- ✅ Works with **Space Age** content
-- ✅ Integrates with **logistic networks**
-- ✅ Supports **circuit networks**
-
----
-
-## 📄 License
-
-This mod is released under the MIT License. Feel free to contribute, modify,
-or distribute according to the license terms.
-
----
-
-## 🙋 Support
-
-Having issues or suggestions? Feel free to:
-
-- 🐛 Report bugs on the mod portal
-- 💡 Suggest features and improvements
-- ⭐ Rate the mod if you enjoy it!
-
----
-
-Happy factory building across the galaxy! 🌌
+4. Adjust speed settings based on power availability
