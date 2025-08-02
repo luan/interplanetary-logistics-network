@@ -9,6 +9,8 @@ local function init_storage()
   storage.active_emissions = storage.active_emissions or {}
   storage.emission_timers = storage.emission_timers or {}
   storage.active_transfers = storage.active_transfers or {}
+  storage.power_failure_notifications = storage.power_failure_notifications or {}
+  storage.power_failure_counts = storage.power_failure_counts or {}
 end
 
 -- Initialize on first run
@@ -34,6 +36,8 @@ script.on_event(defines.events.on_object_destroyed, function(event)
         -- Clean up all related data
         storage.transfer_cooldowns[unit_number] = nil
         storage.emission_timers[unit_number] = nil
+        storage.power_failure_notifications[unit_number] = nil
+        storage.power_failure_counts[unit_number] = nil
         storage.interplanetary_chests[unit_number] = nil
       end
     end
@@ -143,6 +147,82 @@ local function remove_transfer_emissions(entity)
   end
 end
 
+-- Show power failure notification
+local function show_power_failure(entity, power_needed_sending, power_needed_receiving, power_available_sending, power_available_receiving)
+  if not entity or not entity.valid then return end
+
+  local unit_number = entity.unit_number
+  local current_tick = game.tick
+
+  -- Track consecutive failures
+  storage.power_failure_counts[unit_number] = (storage.power_failure_counts[unit_number] or 0) + 1
+  local failure_count = storage.power_failure_counts[unit_number]
+
+  -- Show flying text (always)
+  local text = "⚡ Insufficient Power!"
+
+  -- Create outline by drawing black text in 4 directions
+  local outline_offsets = {{0.015, 0}, {-0.015, 0}, {0, 0.015}, {0, -0.015}}
+  for _, offset in pairs(outline_offsets) do
+    rendering.draw_text{
+      text = text,
+      surface = entity.surface,
+      target = {entity.position.x + offset[1], entity.position.y - 2 + offset[2]},
+      color = {r=0, g=0, b=0, a=0.8},
+      scale = 1.0,
+      font = "default-bold",
+      time_to_live = 60,  -- 1.0 seconds
+      alignment = "center"
+    }
+  end
+
+  -- Draw main text on top
+  rendering.draw_text{
+    text = text,
+    surface = entity.surface,
+    target = {entity.position.x, entity.position.y - 2},
+    color = {r=1, g=0.2, b=0.2},
+    scale = 1.0,
+    font = "default-bold",
+    time_to_live = 120,  -- 2 seconds
+    alignment = "center"
+  }
+
+  -- Show chat notification (rate-limited to once per 30 seconds per chest)
+  local last_notification = storage.power_failure_notifications[unit_number] or 0
+  if current_tick - last_notification > 1800 then -- 30 seconds
+    storage.power_failure_notifications[unit_number] = current_tick
+
+    local sending_needed_mj = power_needed_sending / 1000000
+    local receiving_needed_mj = power_needed_receiving / 1000000
+    local sending_available_mj = power_available_sending / 1000000
+    local receiving_available_mj = power_available_receiving / 1000000
+
+    entity.force.print(
+      "[color=red]Interplanetary transfer failed at [gps=" ..
+      math.floor(entity.position.x) .. "," ..
+      math.floor(entity.position.y) .. "," ..
+      entity.surface.name .. "]: Need " ..
+      string.format("%.1f", sending_needed_mj) .. "MJ (sending) + " ..
+      string.format("%.1f", receiving_needed_mj) .. "MJ (receiving), but only " ..
+      string.format("%.1f", sending_available_mj) .. "MJ + " ..
+      string.format("%.1f", receiving_available_mj) .. "MJ available[/color]"
+    )
+
+    -- Suggest solutions after multiple failures
+    if failure_count >= 5 then
+      entity.force.print("[color=yellow]Tip: Consider adding more power generation or using a slower transfer speed setting[/color]")
+    end
+  end
+end
+
+-- Reset power failure count when transfer succeeds
+local function reset_power_failure_count(entity)
+  if entity and entity.valid and entity.unit_number then
+    storage.power_failure_counts[entity.unit_number] = nil
+  end
+end
+
 
 -- Create animation entity for a container
 local function create_animation_entity(container, is_active)
@@ -231,6 +311,8 @@ script.on_event({
       -- Clean up emissions and transfer data
       remove_transfer_emissions(entity)
       storage.transfer_cooldowns[entity.unit_number] = nil
+      storage.power_failure_notifications[entity.unit_number] = nil
+      storage.power_failure_counts[entity.unit_number] = nil
 
       -- Clean up animation entity
       if chest_data.animation_entity and chest_data.animation_entity.valid then
@@ -306,6 +388,10 @@ script.on_nth_tick(1, function()
               storage.transfer_cooldowns[transfer_data.buffer_id] = game.tick + transfer_data.transfer_duration
               -- game.print("Transfer successful! Cooldown set.")
 
+              -- Reset power failure count on successful transfer
+              reset_power_failure_count(transfer_data.provider)
+              reset_power_failure_count(transfer_data.buffer)
+
               -- Mark both chests as active for transfer duration
               local provider_unit = transfer_data.provider.unit_number
               local buffer_unit = transfer_data.buffer.unit_number
@@ -327,6 +413,13 @@ script.on_nth_tick(1, function()
           -- Schedule cleanup after transfer duration
           storage.emission_timers[transfer_data.provider.unit_number] = game.tick + transfer_data.transfer_duration
           storage.emission_timers[transfer_data.buffer.unit_number] = game.tick + transfer_data.transfer_duration
+        else
+          -- Insufficient power - show notification
+          local chest_to_notify = transfer_data.buffer
+          if provider_energy < transfer_data.sending_power_needed then
+            chest_to_notify = transfer_data.provider
+          end
+          show_power_failure(chest_to_notify, transfer_data.sending_power_needed, transfer_data.receiving_power_needed, provider_energy, buffer_energy)
         end
       end
 
