@@ -9,6 +9,8 @@ function M.init()
   storage.active_transfers = storage.active_transfers or {}
   storage.power_failure_notifications = storage.power_failure_notifications or {}
   storage.power_failure_counts = storage.power_failure_counts or {}
+  storage.item_reservations = storage.item_reservations or {}
+  storage.reservations_by_transfer = storage.reservations_by_transfer or {}
 end
 
 return M
