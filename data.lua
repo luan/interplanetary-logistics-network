@@ -33,6 +33,7 @@ data:extend {
     close_sound = { filename = "__base__/sound/metallic-chest-close.ogg" },
     impact_category = "metal",
     inventory_size = 48,
+    inventory_type = "with_filters_and_bar",
     picture = {
       layers = {
         {
@@ -282,7 +283,7 @@ data:extend {
     subgroup = "logistic-network",
     order = "b[storage]-c[interplanetary-provider-chest]",
     place_result = "interplanetary-provider-chest",
-    stack_size = 50,
+    stack_size = 10,
   },
 
   {
@@ -293,7 +294,7 @@ data:extend {
     subgroup = "logistic-network",
     order = "b[storage]-d[interplanetary-requester-chest]",
     place_result = "interplanetary-requester-chest",
-    stack_size = 50,
+    stack_size = 10,
   },
 
   -- Basic recipes (will need technology later)
