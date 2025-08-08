@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2025.08.08
+  Changes:
+    - Added circuit and logistic wire connectivity to interplanetary provider/requester chests
+      allowing wiring and reading inventories via the circuit network
+    - Minor internal refactors; no gameplay balance changes
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 2025.08.08
+  Changes:
+    - Updated chest inventory to use "with_filters_and_bar" for better item management
+    - Reduced stack size of interplanetary provider/requester chests from 50 to 10 for balance
+---------------------------------------------------------------------------------------------------
+Version: 0.1.4
+Date: 2025.08.07
+  Changes:
+    - Implemented item reservation system to prevent over-committing items across multiple pending transfers
+    - Updated transfer energy handling to stream energy per tick until both sides are fully paid
+    - Enhanced power failure notifications with detailed energy requirements and rate limiting
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2025.08.03
+  Changes:
+    - Extracted transfer logic into dedicated modules and simplified event wiring
+    - Added helpers for cached settings and storage initialization
+    - Simplified power configuration to five presets (free, cheap, normal, expensive, extreme)
+    - Corrected power buffer capacity and prevented duplicate transfers
+    - Adjusted recipe costs to improve progression balance
+    - Added power failure feedback with flying text and rate-limited chat messages including tips
+    - Added basic interplanetary provider/requester chests with placeholder graphics
+    - Documentation and tooling improvements (README, formatter/linter configs)
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2025.07.20
+  Changes:
+    - Initial release
+
