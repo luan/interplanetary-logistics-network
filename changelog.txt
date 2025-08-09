@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2025.08.08
+  Features:
+    - Added rocket cargo integration allowing interplanetary chests to be sent to rockets
+    - Added configurable rocket capacity setting (0-10 chests per rocket)
+  Fixes:
+    - Fixed missing locale strings for interplanetary logistics technologies
+---------------------------------------------------------------------------------------------------
 Version: 0.2.0
 Date: 2025.08.08
   Changes:
