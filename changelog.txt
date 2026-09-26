@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2026.09.26
+  Features:
+    - Added recovered Blender provider/requester sprites, 64-frame animations, shadows and new mod thumbnail.
+    - Added requester source planet/platform and provider selection, plus opt-in local robot access.
+    - Added configurable chest item stack sizes and stacks per transfer.
+  Fixes:
+    - Fixed quality transfers and preserved equipment, blueprint data and spoilage.
+    - Fixed platform placement, cloning, script placement, destruction and orphan helper cleanup.
+    - Prevented local robot delivery loops and transfers between different forces or on the same surface.
+    - Fixed concurrent transfer ID collisions, partial stack requests and request section handling.
+    - Corrected rocket weights, circuit connectors, recipe unlocks and requester buffer ingredients.
+    - Corrected energy scaling and transfer timing, including free power and research bonuses.
+    - Prevented temporary power buffers from consuming and discarding extra energy.
+    - Cancelled stale requests safely and respected inventory capacity and bars.
+  Changes:
+    - Requires Factorio and Space Age 2.0.46 or newer for partial stack transfers.
+    - Existing chests are rescanned and orphan helpers removed when upgrading. In-flight items remain in providers.
+---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2025.08.08
   Features:
