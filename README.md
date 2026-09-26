@@ -1,6 +1,8 @@
 # Interplanetary Logistics Network
 
-Advanced logistics system for resource sharing across planets
+Advanced logistics system for resource sharing across planets and space platforms.
+
+![Interplanetary Logistics Network](thumbnail.png)
 
 [![Factorio](https://img.shields.io/badge/Factorio-2.0+-blue.svg)](https://factorio.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
