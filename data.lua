@@ -311,7 +311,7 @@ data:extend {
     subgroup = "logistic-network",
     order = "b[storage]-c[interplanetary-provider-chest]",
     place_result = "interplanetary-provider-chest",
-    stack_size = 10,
+    stack_size = settings.startup["interplanetary-chest-stack-size"].value,
   },
 
   {
@@ -322,7 +322,7 @@ data:extend {
     subgroup = "logistic-network",
     order = "b[storage]-d[interplanetary-requester-chest]",
     place_result = "interplanetary-requester-chest",
-    stack_size = 10,
+    stack_size = settings.startup["interplanetary-chest-stack-size"].value,
   },
 
   -- Basic recipes (will need technology later)
