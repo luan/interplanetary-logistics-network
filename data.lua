@@ -2,6 +2,7 @@
 -- Prototype definitions for interplanetary logistics chests
 
 -- Custom graphics integrated into chest entities
+local power = require("__interplanetary-logistics-network__.settings_util").get()
 
 data:extend {
   -- Interplanetary Provider Chest (Container)
@@ -157,6 +158,7 @@ data:extend {
   {
     type = "logistic-container",
     logistic_mode = "buffer",
+    render_not_in_network_icon = false,
     name = "interplanetary-requester-chest",
     icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
     icon_size = 64,
@@ -436,19 +438,26 @@ data:extend {
     name = "interplanetary-provider-power-interface",
     icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
     icon_size = 64,
-    flags = { "placeable-off-grid", "not-on-map" },
+    flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
+    collision_mask = { layers = {} },
+    selectable_in_game = false,
+    hidden = true,
     max_health = 1,
     collision_box = { { -0.1, -0.1 }, { 0.1, 0.1 } },
     selection_box = { { 0, 0 }, { 0, 0 } },
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
-      input_flow_limit = "20MW",
+      -- Size each transfer interface for the fastest quality/research combination.
+      input_flow_limit = tostring(
+        math.max(power.sending_energy, power.receiving_energy)
+          * power.stacks_per_transfer
+          / (power.transfer_duration / 60 * 0.4 * 0.85 ^ 3 * 0.8)
+      ) .. "W",
       buffer_capacity = "1GJ",
     },
     energy_usage = "0W",
     energy_production = "0W",
-    energy_consumption = "0W",
     picture = {
       filename = "__core__/graphics/empty.png",
       width = 1,
@@ -462,19 +471,26 @@ data:extend {
     name = "interplanetary-requester-power-interface",
     icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
     icon_size = 64,
-    flags = { "placeable-off-grid", "not-on-map" },
+    flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
+    collision_mask = { layers = {} },
+    selectable_in_game = false,
+    hidden = true,
     max_health = 1,
     collision_box = { { -0.1, -0.1 }, { 0.1, 0.1 } },
     selection_box = { { 0, 0 }, { 0, 0 } },
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
-      input_flow_limit = "20MW",
+      -- Size each transfer interface for the fastest quality/research combination.
+      input_flow_limit = tostring(
+        math.max(power.sending_energy, power.receiving_energy)
+          * power.stacks_per_transfer
+          / (power.transfer_duration / 60 * 0.4 * 0.85 ^ 3 * 0.8)
+      ) .. "W",
       buffer_capacity = "1GJ",
     },
     energy_usage = "0W",
     energy_production = "0W",
-    energy_consumption = "0W",
     picture = {
       filename = "__core__/graphics/empty.png",
       width = 1,

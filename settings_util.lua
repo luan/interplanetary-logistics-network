@@ -24,9 +24,11 @@ local function compute()
   local s = speed_configs[speed_setting] or speed_configs.normal
   local p = power_configs[power_setting] or power_configs.normal
   return {
-    receiving_power = p.receiving * 1000 * s.power_multiplier,
-    sending_power = p.sending * 1000 * s.power_multiplier,
+    -- Energy is per stack; faster settings increase energy, not just instantaneous power.
+    receiving_energy = p.receiving * 1000 * 4 * s.power_multiplier,
+    sending_energy = p.sending * 1000 * 4 * s.power_multiplier,
     transfer_duration = s.duration,
+    stacks_per_transfer = settings.startup["interplanetary-stacks-per-transfer"].value,
   }
 end
 

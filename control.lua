@@ -1,1 +1,1 @@
-require("__interplanetary-logistics-network__.events")
+require "__interplanetary-logistics-network__.events"

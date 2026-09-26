@@ -32,4 +32,13 @@ data:extend {
     maximum_value = 100,
     order = "d",
   },
+  {
+    type = "int-setting",
+    name = "interplanetary-stacks-per-transfer",
+    setting_type = "startup",
+    default_value = 1,
+    minimum_value = 1,
+    maximum_value = 10,
+    order = "e",
+  },
 }

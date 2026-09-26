@@ -2,509 +2,436 @@ local Settings = require "__interplanetary-logistics-network__.settings_util"
 local State = require "__interplanetary-logistics-network__.state"
 
 local M = {}
+local efficiency = { normal = 1, uncommon = 0.85, rare = 0.7, epic = 0.5, legendary = 0.3 }
+local speed = { normal = 1, uncommon = 0.9, rare = 0.75, epic = 0.6, legendary = 0.4 }
 
--- Reservation helpers to avoid over-committing items across multiple pending transfers
-local function get_reserved_total(provider_unit_number, item_name)
-  local per_provider = storage.item_reservations and storage.item_reservations[provider_unit_number]
-  local rec = per_provider and per_provider[item_name]
-  return (rec and rec.total) or 0
+local function item_key(item)
+  return item.name .. "/" .. item.quality
 end
 
-local function add_reservation(provider_entity, item_name, count, transfer_id)
-  if not (provider_entity and provider_entity.valid and transfer_id and item_name and count and count > 0) then
-    return
+local function destroy(entity)
+  if entity and entity.valid then
+    entity.destroy()
   end
-  storage.item_reservations = storage.item_reservations or {}
-  storage.reservations_by_transfer = storage.reservations_by_transfer or {}
-  local pu = provider_entity.unit_number
-  storage.item_reservations[pu] = storage.item_reservations[pu] or {}
-  local rec = storage.item_reservations[pu][item_name]
-  if not rec then
-    rec = { total = 0, by = {} }
-    storage.item_reservations[pu][item_name] = rec
-  end
-  rec.total = rec.total + count
-  rec.by[transfer_id] = (rec.by[transfer_id] or 0) + count
-  storage.reservations_by_transfer[transfer_id] = storage.reservations_by_transfer[transfer_id] or {}
-  table.insert(
-    storage.reservations_by_transfer[transfer_id],
-    { provider_unit = pu, item_name = item_name, count = count }
-  )
 end
 
-local function release_reservation_by_transfer(transfer_id)
-  if not transfer_id then
+local function set_animation(chest)
+  if not chest.entity.valid then
     return
   end
-  local entries = storage.reservations_by_transfer and storage.reservations_by_transfer[transfer_id]
-  if not entries then
+  local kind = chest.entity.name == "interplanetary-provider-chest" and "provider" or "requester"
+  local name = "interplanetary-" .. kind .. "-animation-" .. ((chest.active_count or 0) > 0 and "active" or "idle")
+  if chest.animation_entity and chest.animation_entity.valid and chest.animation_entity.name == name then
     return
   end
-  for _, e in pairs(entries) do
-    local pu = e.provider_unit
-    local item = e.item_name
-    local count = e.count or 0
-    local per_provider = storage.item_reservations and storage.item_reservations[pu]
-    local rec = per_provider and per_provider[item]
-    if rec then
-      local tid_count = rec.by and rec.by[transfer_id] or 0
-      local delta = math.min(count, tid_count)
-      if delta > 0 then
-        rec.total = math.max(0, (rec.total or 0) - delta)
-        rec.by[transfer_id] = tid_count - delta
-        if rec.by[transfer_id] <= 0 then
-          rec.by[transfer_id] = nil
-        end
-      end
-      if (rec.total or 0) <= 0 and (not rec.by or next(rec.by) == nil) then
-        per_provider[item] = nil
-      end
-      if next(per_provider) == nil then
-        storage.item_reservations[pu] = nil
+  destroy(chest.animation_entity)
+  chest.animation_entity = chest.entity.surface.create_entity {
+    name = name,
+    position = chest.entity.position,
+    force = chest.entity.force,
+  }
+  if chest.animation_entity then
+    chest.animation_entity.destructible = false
+  end
+end
+
+local function configure_logistics(chest)
+  if chest.entity.name ~= "interplanetary-requester-chest" then
+    return
+  end
+  local point = chest.entity.get_logistic_point(defines.logistic_member_index.logistic_container)
+  if point then
+    point.enabled = chest.allow_local == true
+  end
+end
+
+function M.register_chest(entity, options)
+  if not entity or not entity.valid then
+    return
+  end
+  if entity.name ~= "interplanetary-provider-chest" and entity.name ~= "interplanetary-requester-chest" then
+    return
+  end
+  local chest = storage.interplanetary_chests[entity.unit_number]
+  if not chest then
+    chest = { entity = entity, active_count = 0 }
+    storage.interplanetary_chests[entity.unit_number] = chest
+    chest.registration = script.register_on_object_destroyed(entity)
+    storage.destroyed_chests[chest.registration] = entity.unit_number
+  end
+  if options then
+    chest.source_surface = options.source_surface
+    chest.source_provider = options.source_provider
+    chest.allow_local = options.allow_local == true
+    chest.enabled = options.enabled ~= false
+  end
+  configure_logistics(chest)
+  set_animation(chest)
+  return chest
+end
+
+local function finish_transfer(id)
+  local transfer = storage.pending_transfers[id]
+  if not transfer then
+    return
+  end
+  destroy(transfer.provider_interface)
+  destroy(transfer.buffer_interface)
+  local reservations = storage.item_reservations[transfer.provider_id]
+  if reservations then
+    reservations[transfer.key] = (reservations[transfer.key] or 0) - transfer.count
+    if reservations[transfer.key] <= 0 then
+      reservations[transfer.key] = nil
+    end
+    if not next(reservations) then
+      storage.item_reservations[transfer.provider_id] = nil
+    end
+  end
+  for _, unit in ipairs { transfer.provider_id, transfer.buffer_id } do
+    local chest = storage.interplanetary_chests[unit]
+    if chest then
+      chest.active_count = math.max(0, (chest.active_count or 0) - 1)
+      if chest.entity.valid then
+        chest.entity.custom_status = nil
+        set_animation(chest)
       end
     end
   end
-  storage.reservations_by_transfer[transfer_id] = nil
+  storage.pending_transfers[id] = nil
 end
 
-local function quality_efficiency(entity)
-  if not entity or not entity.valid then
-    return 1.0
+function M.cancel_transfers(unit)
+  for id, transfer in pairs(storage.pending_transfers) do
+    if transfer.provider_id == unit or transfer.buffer_id == unit then
+      finish_transfer(id)
+    end
   end
-  local q = (entity.quality and entity.quality.name) or "normal"
-  local map = { normal = 1.0, uncommon = 0.85, rare = 0.7, epic = 0.5, legendary = 0.3 }
-  return map[q] or 1.0
 end
 
-local function quality_speed(entity)
-  if not entity or not entity.valid then
-    return 1.0
+function M.remove_chest(unit)
+  M.cancel_transfers(unit)
+  local chest = storage.interplanetary_chests[unit]
+  if not chest then
+    return
   end
-  local q = (entity.quality and entity.quality.name) or "normal"
-  local map = { normal = 1.0, uncommon = 0.9, rare = 0.75, epic = 0.6, legendary = 0.4 }
-  return map[q] or 1.0
+  destroy(chest.animation_entity)
+  if chest.registration then
+    storage.destroyed_chests[chest.registration] = nil
+  end
+  storage.interplanetary_chests[unit] = nil
+end
+
+function M.refresh_chest(entity)
+  local chest = storage.interplanetary_chests[entity.unit_number]
+  if not chest then
+    return M.register_chest(entity)
+  end
+  M.cancel_transfers(entity.unit_number)
+  destroy(chest.animation_entity)
+  configure_logistics(chest)
+  set_animation(chest)
+end
+
+function M.rebuild()
+  State.init()
+  -- Pending jobs have not removed items. Cancel old jobs and rebuild all helper references.
+  for _, transfer in pairs(storage.pending_transfers) do
+    destroy(transfer.provider_interface)
+    destroy(transfer.buffer_interface)
+  end
+  storage.pending_transfers = {}
+  storage.item_reservations = {}
+  storage.destroyed_chests = {}
+  local previous = storage.interplanetary_chests
+  storage.interplanetary_chests = {}
+  for _, surface in pairs(game.surfaces) do
+    for _, entity in
+      pairs(surface.find_entities_filtered {
+        name = {
+          "interplanetary-provider-animation-idle",
+          "interplanetary-provider-animation-active",
+          "interplanetary-requester-animation-idle",
+          "interplanetary-requester-animation-active",
+          "interplanetary-provider-power-interface",
+          "interplanetary-requester-power-interface",
+          "interplanetary-roboport",
+        },
+      })
+    do
+      entity.destroy()
+    end
+    for _, entity in
+      pairs(surface.find_entities_filtered {
+        name = { "interplanetary-provider-chest", "interplanetary-requester-chest" },
+      })
+    do
+      M.register_chest(entity, previous[entity.unit_number])
+    end
+  end
+  for _, name in ipairs {
+    "active_emissions",
+    "emission_timers",
+    "active_transfers",
+    "transfer_cooldowns",
+    "power_failure_notifications",
+    "power_failure_counts",
+    "reservations_by_transfer",
+  } do
+    storage[name] = nil
+  end
+end
+
+local function requests(entity)
+  local result = {}
+  local sections = entity.get_logistic_sections()
+  if not sections then
+    return result
+  end
+  for _, section in pairs(sections.sections) do
+    if section.active and section.multiplier > 0 then
+      for _, filter in pairs(section.filters) do
+        local value = filter.value
+        if value and (value.type == nil or value.type == "item") and (filter.min or 0) > 0 then
+          local item = { name = value.name, quality = value.quality or "normal" }
+          local key = item_key(item)
+          local request = result[key] or { item = item, count = 0 }
+          request.count = request.count + math.floor(filter.min * section.multiplier)
+          result[key] = request
+        end
+      end
+    end
+  end
+  return result
+end
+
+local function route_matches(provider, requester, chest)
+  return provider.valid
+    and requester.valid
+    and provider.force == requester.force
+    and provider.surface ~= requester.surface
+    and (not chest.source_surface or provider.surface.name == chest.source_surface)
+    and (not chest.source_provider or provider.unit_number == chest.source_provider)
+end
+
+local function is_enabled(chest)
+  if chest.enabled == false then
+    return false
+  end
+  -- The general entity status can be "out of logistic network" even when the circuit is false.
+  local behavior = chest.entity.get_control_behavior()
+  return not behavior or not behavior.circuit_condition_enabled or behavior.circuit_condition.fulfilled == true
+end
+
+local function request_need(transfer)
+  local chest = storage.interplanetary_chests[transfer.buffer_id]
+  if not chest or not is_enabled(chest) or not route_matches(transfer.provider, transfer.buffer, chest) then
+    return 0
+  end
+  local request = requests(transfer.buffer)[transfer.key]
+  return request and math.max(0, request.count - transfer.buffer.get_item_count(transfer.item)) or 0
 end
 
 local function research_speed(force)
-  if not force or not force.valid then
-    return 1.0
+  local multiplier = 1
+  for i = 1, 4 do
+    local technology = force.technologies["interplanetary-logistics-speed-" .. i]
+    if technology and technology.researched then
+      multiplier = multiplier * (i == 4 and 0.8 or 0.85)
+    end
   end
-  local m = 1.0
-  if
-    force.technologies["interplanetary-logistics-speed-1"]
-    and force.technologies["interplanetary-logistics-speed-1"].researched
-  then
-    m = m * 0.85
-  end
-  if
-    force.technologies["interplanetary-logistics-speed-2"]
-    and force.technologies["interplanetary-logistics-speed-2"].researched
-  then
-    m = m * 0.85
-  end
-  if
-    force.technologies["interplanetary-logistics-speed-3"]
-    and force.technologies["interplanetary-logistics-speed-3"].researched
-  then
-    m = m * 0.85
-  end
-  if
-    force.technologies["interplanetary-logistics-speed-4"]
-    and force.technologies["interplanetary-logistics-speed-4"].researched
-  then
-    m = m * 0.8
-  end
-  return m
+  return multiplier
 end
 
-local function set_animation_state(chest_data, is_active)
-  if not chest_data or not chest_data.entity or not chest_data.entity.valid then
-    return
-  end
-  if chest_data.animation_entity and chest_data.animation_entity.valid then
-    chest_data.animation_entity.destroy()
-  end
-  local container = chest_data.entity
-  local state_suffix = is_active and "-active" or "-idle"
-  local anim
-  if container.name == "interplanetary-provider-chest" then
-    anim = "interplanetary-provider-animation" .. state_suffix
-  elseif container.name == "interplanetary-requester-chest" then
-    anim = "interplanetary-requester-animation" .. state_suffix
-  else
-    return
-  end
-  local e = container.surface.create_entity { name = anim, position = container.position, force = container.force }
-  if e then
-    e.destructible = false
-  end
-  chest_data.animation_entity = e
-end
-
-local function show_power_failure(entity, sp, rp, sa, ra)
-  if not entity or not entity.valid then
-    return
-  end
-  local id = entity.unit_number
-  local now = game.tick
-  storage.power_failure_counts[id] = (storage.power_failure_counts[id] or 0) + 1
-  local count = storage.power_failure_counts[id]
-  local text = "⚡ Insufficient Power!"
-  local offs = { { 0.015, 0 }, { -0.015, 0 }, { 0, 0.015 }, { 0, -0.015 } }
-  for _, o in pairs(offs) do
-    rendering.draw_text {
-      text = text,
-      surface = entity.surface,
-      target = { entity.position.x + o[1], entity.position.y - 2 + o[2] },
-      color = { r = 0, g = 0, b = 0, a = 0.8 },
-      scale = 1.0,
-      font = "default-bold",
-      time_to_live = 60,
-      alignment = "center",
-    }
-  end
-  rendering.draw_text {
-    text = text,
-    surface = entity.surface,
-    target = { entity.position.x, entity.position.y - 2 },
-    color = { r = 1, g = 0.2, b = 0.2 },
-    scale = 1.0,
-    font = "default-bold",
-    time_to_live = 120,
-    alignment = "center",
+local function create_interface(entity, kind, per_tick)
+  local interface = entity.surface.create_entity {
+    name = "interplanetary-" .. kind .. "-power-interface",
+    position = entity.position,
+    force = entity.force,
+    quality = entity.quality,
   }
-  local last = storage.power_failure_notifications[id] or 0
-  if now - last > 1800 then
-    storage.power_failure_notifications[id] = now
-    entity.force.print(
-      "[color=red]Interplanetary transfer failed at [gps="
-        .. math.floor(entity.position.x)
-        .. ","
-        .. math.floor(entity.position.y)
-        .. ","
-        .. entity.surface.name
-        .. "]: Need "
-        .. string.format("%.1f", sp / 1000000)
-        .. "MJ (sending) + "
-        .. string.format("%.1f", rp / 1000000)
-        .. "MJ (receiving), but only "
-        .. string.format("%.1f", sa / 1000000)
-        .. "MJ + "
-        .. string.format("%.1f", ra / 1000000)
-        .. "MJ available[/color]"
+  if interface then
+    interface.destructible = false
+    interface.electric_buffer_size = per_tick
+  end
+  return interface
+end
+
+local function begin_transfer(provider, requester, item, count)
+  local config = Settings.get()
+  local provider_quality, requester_quality = provider.quality.name, requester.quality.name
+  local duration = math.max(
+    1,
+    math.ceil(
+      config.transfer_duration
+        * math.max(speed[provider_quality] or 1, speed[requester_quality] or 1)
+        * research_speed(requester.force)
     )
-    if count >= 5 then
-      entity.force.print "[color=yellow]Tip: Consider more power or slower transfer speed[/color]"
-    end
+  )
+  local stacks = count / prototypes.item[item.name].stack_size
+  local sending = config.sending_energy * stacks * (efficiency[provider_quality] or 1)
+  local receiving = config.receiving_energy * stacks * (efficiency[requester_quality] or 1)
+  local pi = sending > 0 and create_interface(provider, "provider", sending / duration) or nil
+  local bi = receiving > 0 and create_interface(requester, "requester", receiving / duration) or nil
+  if (sending > 0 and not pi) or (receiving > 0 and not bi) then
+    destroy(pi)
+    destroy(bi)
+    return
+  end
+  storage.next_transfer_id = storage.next_transfer_id + 1
+  local key = item_key(item)
+  storage.pending_transfers[storage.next_transfer_id] = {
+    provider = provider,
+    buffer = requester,
+    provider_id = provider.unit_number,
+    buffer_id = requester.unit_number,
+    item = item,
+    key = key,
+    count = count,
+    provider_interface = pi,
+    buffer_interface = bi,
+    sending_remaining = sending,
+    receiving_remaining = receiving,
+    sending_per_tick = sending / duration,
+    receiving_per_tick = receiving / duration,
+    created_tick = game.tick,
+    duration = duration,
+  }
+  local reservations = storage.item_reservations[provider.unit_number] or {}
+  storage.item_reservations[provider.unit_number] = reservations
+  reservations[key] = (reservations[key] or 0) + count
+  for _, entity in ipairs { provider, requester } do
+    local chest = storage.interplanetary_chests[entity.unit_number]
+    chest.active_count = (chest.active_count or 0) + 1
+    set_animation(chest)
   end
 end
 
-local function reset_failure(entity)
-  if entity and entity.valid and entity.unit_number then
-    storage.power_failure_counts[entity.unit_number] = nil
+local function drain(interface, remaining, per_tick)
+  if remaining <= 0 then
+    return 0
   end
-end
-
-function M.register_chest(entity)
-  storage.interplanetary_chests[entity.unit_number] = { entity = entity, type = entity.name }
-  set_animation_state(storage.interplanetary_chests[entity.unit_number], false)
-end
-
-local function process_emission_timers()
-  for unit_number, end_tick in pairs(storage.emission_timers) do
-    if game.tick >= end_tick then
-      storage.emission_timers[unit_number] = nil
-    end
+  if not interface or not interface.valid then
+    return remaining
   end
+  local amount = math.min(interface.energy, remaining, per_tick)
+  interface.energy = interface.energy - amount
+  remaining = math.max(0, remaining - amount)
+  if remaining == 0 then
+    interface.destroy()
+  else
+    -- Only charge energy that this job can consume; never discard a full buffer on completion.
+    interface.electric_buffer_size = math.min(remaining, per_tick)
+  end
+  return remaining
 end
 
-local function process_active_transfers()
-  for unit_number, end_tick in pairs(storage.active_transfers) do
-    if game.tick >= end_tick then
-      local chest_data = storage.interplanetary_chests[unit_number]
-      if chest_data then
-        set_animation_state(chest_data, false)
+local function move_items(provider, requester, item, count)
+  local source = provider.get_inventory(defines.inventory.chest)
+  local target = requester.get_inventory(defines.inventory.chest)
+  local limit = target.supports_bar() and target.get_bar() - 1 or #target
+  local remaining = count
+  -- Transfer actual stacks so quality, spoilage, equipment, tags and blueprints survive.
+  for i = 1, #source do
+    local stack = source[i]
+    if stack.valid_for_read and stack.name == item.name and stack.quality.name == item.quality then
+      for j = 1, limit do
+        if not stack.valid_for_read or remaining == 0 then
+          break
+        end
+        local before = stack.count
+        target[j].transfer_stack(stack, math.min(remaining, before))
+        remaining = remaining - (before - (stack.valid_for_read and stack.count or 0))
       end
-      storage.active_transfers[unit_number] = nil
+    end
+    if remaining == 0 then
+      break
     end
   end
+  return count - remaining
 end
 
 function M.on_fast_tick()
-  State.init()
-  process_emission_timers()
-  process_active_transfers()
-  for id, t in pairs(storage.pending_transfers) do
-    if t.created_tick + 5 <= game.tick then
-      local pi = t.provider_interface
-      local bi = t.buffer_interface
-      local provider_valid = t.provider and t.provider.valid
-      local buffer_valid = t.buffer and t.buffer.valid
-      if not provider_valid or not buffer_valid then
-        if pi and pi.valid then
-          pi.destroy()
-        end
-        if bi and bi.valid then
-          bi.destroy()
-        end
-        release_reservation_by_transfer(id)
-        storage.pending_transfers[id] = nil
-      elseif pi and pi.valid and bi and bi.valid then
-        local pe = pi.energy or 0
-        local be = bi.energy or 0
-
-        -- Initialize streaming fields for backward compatibility
-        t.sending_energy_remaining = t.sending_energy_remaining or t.sending_power_needed
-        t.receiving_energy_remaining = t.receiving_energy_remaining or t.receiving_power_needed
-        t.sending_energy_per_tick = t.sending_energy_per_tick
-          or math.max(0, (t.sending_power_needed / t.transfer_duration))
-        t.receiving_energy_per_tick = t.receiving_energy_per_tick
-          or math.max(0, (t.receiving_power_needed / t.transfer_duration))
-
-        local drained = false
-
-        -- Drain provider side
-        if t.sending_energy_remaining > 0 and pe > 0 then
-          local drain_s = math.min(pe, t.sending_energy_remaining, t.sending_energy_per_tick)
-          if drain_s > 0 then
-            pi.energy = pe - drain_s
-            t.sending_energy_remaining = t.sending_energy_remaining - drain_s
-            drained = true
-          end
-        end
-
-        -- Drain receiver side
-        if t.receiving_energy_remaining > 0 and be > 0 then
-          local drain_r = math.min(be, t.receiving_energy_remaining, t.receiving_energy_per_tick)
-          if drain_r > 0 then
-            bi.energy = be - drain_r
-            t.receiving_energy_remaining = t.receiving_energy_remaining - drain_r
-            drained = true
-          end
-        end
-
-        if t.sending_energy_remaining <= 0 and t.receiving_energy_remaining <= 0 then
-          -- Energy fully paid: perform transfer and clean up
-          local removed = t.provider.remove_item { name = t.item_name, count = t.stack_size } or 0
-          if removed < t.stack_size then
-            -- Not enough items at provider anymore: return anything that was removed
-            if removed > 0 then
-              local returned = t.provider.insert { name = t.item_name, count = removed } or 0
-              local spill = removed - returned
-              if spill > 0 then
-                t.provider.surface.spill_item_stack(
-                  t.provider.position,
-                  { name = t.item_name, count = spill },
-                  true,
-                  t.provider.force,
-                  false
-                )
-              end
-            end
-            release_reservation_by_transfer(id)
-          else
-            -- We removed a full stack; attempt to insert on the buffer
-            local inserted = t.buffer.insert { name = t.item_name, count = removed } or 0
-            if inserted == removed then
-              storage.transfer_cooldowns[t.buffer_id] = storage.transfer_cooldowns[t.buffer_id] or {}
-              storage.transfer_cooldowns[t.buffer_id][t.item_name] = game.tick + t.transfer_duration
-              reset_failure(t.provider)
-              reset_failure(t.buffer)
-              local pend = game.tick + t.transfer_duration
-              storage.active_transfers[t.provider.unit_number] = pend
-              storage.active_transfers[t.buffer.unit_number] = pend
-              local pd = storage.interplanetary_chests[t.provider.unit_number]
-              local bd = storage.interplanetary_chests[t.buffer.unit_number]
-              if pd then
-                set_animation_state(pd, true)
-              end
-              if bd then
-                set_animation_state(bd, true)
-              end
-              release_reservation_by_transfer(id)
-            else
-              -- Partial insertion: return the remainder to the provider
-              local to_return = removed - inserted
-              if to_return > 0 then
-                local returned = t.provider.insert { name = t.item_name, count = to_return } or 0
-                local spill = to_return - returned
-                if spill > 0 then
-                  t.provider.surface.spill_item_stack(
-                    t.provider.position,
-                    { name = t.item_name, count = spill },
-                    true,
-                    t.provider.force,
-                    false
-                  )
-                end
-              end
-              release_reservation_by_transfer(id)
-            end
-          end
-          storage.emission_timers[t.provider.unit_number] = game.tick + t.transfer_duration
-          storage.emission_timers[t.buffer.unit_number] = game.tick + t.transfer_duration
-
-          if pi and pi.valid then
-            pi.destroy()
-          end
-          if bi and bi.valid then
-            bi.destroy()
-          end
-          storage.pending_transfers[id] = nil
+  for id, transfer in pairs(storage.pending_transfers) do
+    local provider, requester = transfer.provider, transfer.buffer
+    if
+      not provider.valid
+      or not requester.valid
+      or request_need(transfer) < transfer.count
+      or provider.get_item_count(transfer.item) < transfer.count
+    then
+      finish_transfer(id)
+    elseif
+      (transfer.sending_remaining > 0 and not (transfer.provider_interface and transfer.provider_interface.valid))
+      or (transfer.receiving_remaining > 0 and not (transfer.buffer_interface and transfer.buffer_interface.valid))
+    then
+      finish_transfer(id)
+    else
+      transfer.sending_remaining =
+        drain(transfer.provider_interface, transfer.sending_remaining, transfer.sending_per_tick)
+      transfer.receiving_remaining =
+        drain(transfer.buffer_interface, transfer.receiving_remaining, transfer.receiving_per_tick)
+      if game.tick - transfer.created_tick >= transfer.duration then
+        if transfer.sending_remaining < 0.001 and transfer.receiving_remaining < 0.001 then
+          move_items(provider, requester, transfer.item, transfer.count)
+          finish_transfer(id)
         else
-          -- Not fully paid yet: keep interfaces
-          -- Show warning only if we made no progress recently
-          if not drained then
-            local now = game.tick
-            local last_warn = t.last_warning_tick or 0
-            if now - last_warn >= 120 then
-              local chest = t.buffer
-              if (t.sending_energy_remaining or 0) > (t.receiving_energy_remaining or 0) then
-                chest = t.provider
-              end
-              show_power_failure(chest, t.sending_energy_remaining, t.receiving_energy_remaining, pe, be)
-              t.last_warning_tick = now
-            end
+          for _, entity in ipairs { provider, requester } do
+            entity.custom_status =
+              { diode = defines.entity_status_diode.yellow, label = { "iln-status.waiting-for-power" } }
           end
         end
-      else
-        -- Interfaces got removed externally; clean up this pending transfer
-        if pi and pi.valid then
-          pi.destroy()
-        end
-        if bi and bi.valid then
-          bi.destroy()
-        end
-        release_reservation_by_transfer(id)
-        storage.pending_transfers[id] = nil
       end
     end
   end
 end
 
 function M.on_slow_tick()
-  State.init()
-  if not storage.interplanetary_chests then
-    return
-  end
-  local providers = {}
-  local buffers = {}
-  for unit_number, data in pairs(storage.interplanetary_chests) do
-    if data.entity and data.entity.valid then
-      if data.type == "interplanetary-provider-chest" then
-        providers[#providers + 1] = data.entity
-      elseif data.type == "interplanetary-requester-chest" then
-        buffers[#buffers + 1] = data.entity
-      end
+  local providers, requesters = {}, {}
+  for unit, chest in pairs(storage.interplanetary_chests) do
+    if not chest.entity.valid then
+      M.remove_chest(unit)
+    elseif chest.entity.name == "interplanetary-provider-chest" then
+      providers[#providers + 1] = chest.entity
     else
-      storage.interplanetary_chests[unit_number] = nil
+      configure_logistics(chest)
+      requesters[#requesters + 1] = chest
     end
   end
-  local power = Settings.get()
-  for _, buffer in pairs(buffers) do
-    if buffer and buffer.valid then
-      local id = buffer.unit_number
-      local now = game.tick
-      local ok, err = pcall(function()
-        local lp = buffer.get_logistic_point(defines.logistic_member_index.logistic_container)
-        if not lp then
-          return
+  table.sort(providers, function(a, b)
+    return a.unit_number < b.unit_number
+  end)
+  for _, chest in ipairs(requesters) do
+    local requester = chest.entity
+    if is_enabled(chest) then
+      local pending = {}
+      for _, transfer in pairs(storage.pending_transfers) do
+        if transfer.buffer_id == requester.unit_number then
+          pending[transfer.key] = true
         end
-        for _, section in pairs(lp.sections) do
-          for _, filter in pairs(section.filters) do
-            if filter.value and filter.value.name then
-              local item = filter.value.name
-              local req = filter.min or 0
-              local cur = buffer.get_item_count(item) or 0
-              local need = req - cur
-              if need <= 0 then
-                goto next_filter
-              end
-              local stack = prototypes.item[item].stack_size
-              if need < stack then
-                goto next_filter
-              end
-              -- Per-item cooldown gate
-              if
-                storage.transfer_cooldowns[id]
-                and storage.transfer_cooldowns[id][item]
-                and now < storage.transfer_cooldowns[id][item]
-              then
-                goto next_filter
-              end
-              local pending = false
-              for _, t in pairs(storage.pending_transfers) do
-                if t.buffer_id == id and t.item_name == item then
-                  pending = true
-                  break
-                end
-              end
-              if pending then
-                goto next_filter
-              end
-              for _, provider in pairs(providers) do
-                if provider and provider.valid and provider ~= buffer then
-                  local avail = (provider.get_item_count(item) or 0) - get_reserved_total(provider.unit_number, item)
-                  if avail >= stack then
-                    local pef = quality_efficiency(provider)
-                    local bef = quality_efficiency(buffer)
-                    local ps = quality_speed(provider)
-                    local bs = quality_speed(buffer)
-                    local rs = research_speed(provider.force)
-                    local speed = math.min(ps, bs) * rs
-                    local duration = power.transfer_duration * speed
-                    local sp = power.sending_power * duration / 60 * pef
-                    local rp = power.receiving_power * duration / 60 * bef
-                    local pi = provider.surface.create_entity {
-                      name = "interplanetary-provider-power-interface",
-                      position = { x = provider.position.x + 0.1, y = provider.position.y + 0.1 },
-                      force = provider.force,
-                      quality = provider.quality,
-                    }
-                    local bi = buffer.surface.create_entity {
-                      name = "interplanetary-requester-power-interface",
-                      position = { x = buffer.position.x + 0.1, y = buffer.position.y + 0.1 },
-                      force = buffer.force,
-                      quality = buffer.quality,
-                    }
-                    if pi and bi then
-                      local tid = provider.unit_number .. "_" .. buffer.unit_number .. "_" .. now
-                      storage.pending_transfers[tid] = {
-                        provider = provider,
-                        buffer = buffer,
-                        buffer_id = id,
-                        item_name = item,
-                        stack_size = stack,
-                        sending_power_needed = sp,
-                        receiving_power_needed = rp,
-                        transfer_duration = duration,
-                        provider_interface = pi,
-                        buffer_interface = bi,
-                        created_tick = now,
-                      }
-                      add_reservation(provider, item, stack, tid)
-                      goto next_filter
-                    else
-                      if pi then
-                        pi.destroy()
-                      end
-                      if bi then
-                        bi.destroy()
-                      end
-                    end
-                  end
-                end
+      end
+      for key, request in pairs(requests(requester)) do
+        local need = request.count - requester.get_item_count(request.item)
+        if need > 0 and not pending[key] then
+          local capacity = requester.get_inventory(defines.inventory.chest).get_insertable_count(request.item)
+          for _, provider in ipairs(providers) do
+            if route_matches(provider, requester, chest) then
+              local reserved = storage.item_reservations[provider.unit_number]
+              local available = provider.get_item_count(request.item) - (reserved and reserved[key] or 0)
+              local count = math.min(
+                need,
+                available,
+                capacity,
+                prototypes.item[request.item.name].stack_size * Settings.get().stacks_per_transfer
+              )
+              if count > 0 then
+                begin_transfer(provider, requester, request.item, count)
+                break
               end
             end
-            ::next_filter::
           end
         end
-      end)
-      if not ok then
-        log("transfer on_slow_tick error: " .. tostring(err))
       end
     end
-    ::continue::
   end
 end
 
