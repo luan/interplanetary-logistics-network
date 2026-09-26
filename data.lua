@@ -331,7 +331,7 @@ data:extend {
   {
     type = "recipe",
     name = "interplanetary-provider-chest",
-    enabled = true,
+    enabled = false,
     ingredients = {
       { type = "item", name = "passive-provider-chest", amount = 50 },
       { type = "item", name = "processing-unit", amount = 250 },
@@ -344,7 +344,7 @@ data:extend {
   {
     type = "recipe",
     name = "interplanetary-requester-chest",
-    enabled = true,
+    enabled = false,
     ingredients = {
       { type = "item", name = "buffer-chest", amount = 50 },
       { type = "item", name = "processing-unit", amount = 250 },

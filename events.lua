@@ -7,6 +7,12 @@ local function rebuild()
   State.init()
   Settings.invalidate()
   Transfer.rebuild()
+  for _, force in pairs(game.forces) do
+    local technology = force.technologies["interplanetary-logistics"]
+    for _, name in ipairs { "interplanetary-provider-chest", "interplanetary-requester-chest" } do
+      force.recipes[name].enabled = technology and technology.researched or false
+    end
+  end
 end
 
 script.on_init(rebuild)
