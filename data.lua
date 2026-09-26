@@ -35,12 +35,8 @@ data:extend {
     inventory_size = 48,
     inventory_type = "with_filters_and_bar",
     -- Circuit and logistic wire connectivity (for reading inventory)
-    circuit_wire_connection_points = circuit_connector_definitions["chest"].points,
-    circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
+    circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
-    logistic_wire_connection_points = circuit_connector_definitions["chest"].points,
-    logistic_connector_sprites = circuit_connector_definitions["chest"].sprites,
-    logistic_wire_max_distance = default_logistic_wire_max_distance,
     picture = {
       layers = {
         {
@@ -188,12 +184,8 @@ data:extend {
     impact_category = "metal",
     inventory_size = 48,
     -- Circuit and logistic wire connectivity (for reading inventory)
-    circuit_wire_connection_points = circuit_connector_definitions["chest"].points,
-    circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
+    circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
-    logistic_wire_connection_points = circuit_connector_definitions["chest"].points,
-    logistic_connector_sprites = circuit_connector_definitions["chest"].sprites,
-    logistic_wire_max_distance = default_logistic_wire_max_distance,
     picture = {
       layers = {
         {
