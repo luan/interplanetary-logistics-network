@@ -1,6 +1,7 @@
 local State = require "__interplanetary-logistics-network__.state"
 local Transfer = require "__interplanetary-logistics-network__.transfer"
 local Settings = require "__interplanetary-logistics-network__.settings_util"
+local Requester = require "__interplanetary-logistics-network__.requester"
 
 local function rebuild()
   State.init()
@@ -94,3 +95,12 @@ script.on_event(defines.events.on_player_setup_blueprint, function(event)
     end
   end
 end)
+
+script.on_event(defines.events.on_gui_opened, function(event)
+  Requester.open(game.get_player(event.player_index), event.entity)
+end)
+script.on_event(defines.events.on_gui_closed, function(event)
+  Requester.close(game.get_player(event.player_index))
+end)
+script.on_event(defines.events.on_gui_checked_state_changed, Requester.changed)
+script.on_event(defines.events.on_gui_selection_state_changed, Requester.changed)
