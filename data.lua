@@ -344,7 +344,7 @@ data:extend {
     name = "interplanetary-requester-chest",
     enabled = true,
     ingredients = {
-      { type = "item", name = "requester-chest", amount = 50 },
+      { type = "item", name = "buffer-chest", amount = 50 },
       { type = "item", name = "processing-unit", amount = 250 },
       { type = "item", name = "steel-plate", amount = 500 },
       { type = "item", name = "refined-hazard-concrete", amount = 200 },
