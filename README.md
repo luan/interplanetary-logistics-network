@@ -28,14 +28,20 @@ interconnected supply chains.
 ### Interplanetary Provider Chest
 
 - Provides items to the interplanetary network
-- Items can be requested by any requester chest on other surfaces
+- Items can be requested by this mod’s requester chests on other surfaces in the same force
 - Quality reduces power consumption and transfer time
 
 ### Interplanetary Requester Chest
 
 - Configure item requests via logistic slots
-- Receives items from provider chests on any surface
-- Transfers occur independently of local logistics
+- Receives items from provider chests on other surfaces in the same force
+- Transfers occur independently of local logistics, including on space platforms
+- Select a source planet/platform and optionally a specific provider in the chest panel
+- Local robot access is off by default to prevent delivery loops; use inserters or loaders for output
+- Enable local robot access in the chest panel for normal buffer behavior: robots can both deliver and collect items
+- With robots enabled, request directly from the buffer or unload into another buffer; unloading into a passive provider can create a delivery loop
+- Request sections, multipliers, item quality and circuit disable conditions are respected
+- Partial stacks work; equipment, blueprints and spoilage survive transfers
 
 ## Power & Performance
 
@@ -51,9 +57,9 @@ Power consumption varies based on your settings combination:
 - **Expensive**: 40 MW / 10 MW - Challenging
 - **Extreme**: 80 MW / 20 MW - Maximum difficulty
 
-**Speed Settings** affect both duration and power:
+**Speed Settings** affect both duration and energy per stack:
 
-| Speed Setting  | Duration | Power Multiplier | Energy at Normal Cost |
+| Speed Setting  | Duration | Energy Multiplier | Energy at Normal Cost |
 | -------------- | -------- | ---------------- | --------------------- |
 | **Ultra-Slow** | 16s      | 0.625x           | 50 MJ                 |
 | **Slow**       | 8s       | 0.75x            | 60 MJ                 |
@@ -107,7 +113,6 @@ With legendary quality chests and all research:
 
 - Energy: 24 MJ per stack (70% reduction)
 - Time: 0.78 seconds (80.5% faster)
-- Overall: 31x efficiency improvement
 
 ## Configuration
 
@@ -130,6 +135,7 @@ With legendary quality chests and all research:
 
 ### Prerequisites
 
+- Factorio and Space Age 2.0.46 or newer
 - Research Logistic System technology
 - Have Space Science Pack production running
 - Establish power generation on target planets/platforms
@@ -137,10 +143,10 @@ With legendary quality chests and all research:
 ### Basic Setup
 
 1. Research "Interplanetary Logistics" technology
-2. Craft provider and requester chests
+2. Craft **Interplanetary Provider Chests** and **Interplanetary Requester Chests**; vanilla chests do not teleport items
 3. Place provider chests near item sources
-4. Configure requester chests with desired items
-5. Ensure adequate power supply for transfers
+4. Place a requester on a different planet or platform and configure its item requests and qualities
+5. Ensure both endpoints have electric pole coverage and adequate generation; a local roboport is only needed for local robots
 6. Items will transfer automatically between surfaces
 
 ### Optimization
@@ -149,3 +155,49 @@ With legendary quality chests and all research:
 2. Research speed technologies as you explore planets
 3. Upgrade to higher quality chests for efficiency
 4. Adjust speed settings based on power availability
+
+
+## Transfers and settings
+
+Each request can transfer up to the configured number of stacks (default 1,
+maximum 10). Smaller requests and partial provider stacks work too. Energy scales
+with the number of items. Both endpoints must pay their share and the transfer
+duration must elapse; free power still respects the duration. The slower chest's
+quality determines speed. Chest quality reduces its own energy cost, while speed
+research reduces time. A second request cannot reserve items already assigned to
+another transfer. Items remain at the provider until delivery.
+
+Requests from separate active sections are added after applying their multipliers.
+Disabling a section, changing a route or disabling the requester cancels stale
+transfers. Items that cannot fit stay at the provider.
+
+**Rocket capacity** defaults to 0 (too heavy for rockets). Set it to 1, 2, 3, 5 or
+10 to choose the number of chests per vanilla rocket payload. Chests can also be
+crafted directly on a platform. **Chest item stack size** controls inventory
+stacking separately, from 1 to 100 (default 10).
+
+## Upgrading
+
+Version 0.4.0 rescans existing chests and removes orphan visual/power helpers.
+Pending transfers restart; their items have not left the providers. Local robot
+access defaults to off, and circuit disable conditions now also pause
+interplanetary transfers. Re-enable local robot access in a requester panel if your
+factory deliberately uses buffer behavior. Recipes require Interplanetary Logistics research.
+
+Source filters are copied with entity settings and cloning. Blueprints preserve
+source surfaces, but omit specific provider IDs because IDs are local to a save.
+
+## Development
+
+Format with `stylua . --config-path stylua.toml` and lint with
+`luacheck . --config .luacheckrc`. Run behavioral checks in Factorio with:
+
+```sh
+python3 tests/run.py /path/to/factorio --power normal --stacks 3 --rocket 5
+```
+
+The runner uses disposable directories and accelerated simulation ticks. It does
+not load or modify player saves. Validate sprites and the requester panel in a
+rendered game as well.
+
+See [graphics source](graphics/README.md) for the recovered Blender scene.
