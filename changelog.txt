@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+Date: 2026.09.27
+  Changes:
+    - Added compatibility with Factorio and Space Age 2.1. Factorio 2.0 players should use 0.4.0.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2026.09.26
   Features:
@@ -62,4 +67,3 @@ Version: 0.1.0
 Date: 2025.07.20
   Changes:
     - Initial release
-

@@ -4,7 +4,7 @@ Advanced logistics system for resource sharing across planets and space platform
 
 ![Interplanetary Logistics Network](thumbnail.png)
 
-[![Factorio](https://img.shields.io/badge/Factorio-2.0+-blue.svg)](https://factorio.com/)
+[![Factorio](https://img.shields.io/badge/Factorio-2.1-blue.svg)](https://factorio.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## Overview
@@ -135,7 +135,7 @@ With legendary quality chests and all research:
 
 ### Prerequisites
 
-- Factorio and Space Age 2.0.46 or newer
+- Factorio and Space Age 2.1 or newer (use ILN 0.4.0 for Factorio 2.0)
 - Research Logistic System technology
 - Have Space Science Pack production running
 - Establish power generation on target planets/platforms
