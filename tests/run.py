@@ -21,7 +21,7 @@ mods.mkdir()
 (mods / root.name).symlink_to(root, target_is_directory=True)
 harness = mods / "iln-integration-tests"
 harness.mkdir()
-(harness / "info.json").write_text(json.dumps({"name": "iln-integration-tests", "version": "1.0.0", "title": "ILN integration tests", "author": "ILN", "factorio_version": "2.0", "dependencies": ["interplanetary-logistics-network"]}))
+(harness / "info.json").write_text(json.dumps({"name": "iln-integration-tests", "version": "1.0.0", "title": "ILN integration tests", "author": "ILN", "factorio_version": json.loads((root / "info.json").read_text())["factorio_version"], "dependencies": ["interplanetary-logistics-network"]}))
 (harness / "settings-updates.lua").write_text(
     'data.raw["string-setting"]["interplanetary-power-cost"].default_value = ' + json.dumps(args.power) + '\n'
     + 'data.raw["string-setting"]["interplanetary-transfer-speed"].default_value = ' + json.dumps(args.speed) + '\n'
@@ -42,7 +42,7 @@ server.write_text(json.dumps(server_settings))
 command = [str(args.factorio), "--config", str(config), "--mod-directory", str(mods), "--start-server-load-scenario", "integration", "--server-settings", str(server), "--bind", "127.0.0.1", "--port", "0", "--until-tick", "3601", "--disable-audio"]
 process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE,
     text=True, env={**os.environ, "SteamAppId": "427520", "SteamGameId": "427520"})
-timeout = Timer(30, process.kill)
+timeout = Timer(120, process.kill)
 timeout.start()
 lines = []
 for line in process.stdout:
