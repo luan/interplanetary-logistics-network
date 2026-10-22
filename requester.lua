@@ -4,7 +4,7 @@ local M = {}
 local function surface_name(surface)
   return surface.platform and surface.platform.name
     or surface.localised_name
-    or (surface.planet and surface.planet.localised_name)
+    or (surface.planet and surface.planet.prototype.localised_name)
     or surface.name
 end
 

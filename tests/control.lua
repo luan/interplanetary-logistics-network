@@ -203,6 +203,53 @@ local function setup()
   }
   assert(storage.platform, "Space platform creation")
   storage.platform.apply_starter_pack()
+  local player = game.players[1]
+  if player then
+    local planet_surface = game.planets.nauvis.create_surface()
+    local planet_provider = build("interplanetary-provider-chest", planet_surface, { 0, 0 })
+    storage.a.localised_name = "Custom source"
+    remote.call("iln-gui-test", "open", player.index, storage.routed.requester)
+    local frame = assert(player.gui.relative.iln_requester, "Requester GUI opens")
+    local labels = frame.iln_surface.items
+    local surfaces = frame.iln_surface.tags.surfaces
+    local saw_planet, saw_custom, saw_platform = false, false, false
+    for index, name in ipairs(surfaces) do
+      if name == planet_surface.name then
+        assert_equal(
+          helpers.table_to_json(labels[index]),
+          helpers.table_to_json(planet_surface.planet.prototype.localised_name),
+          "Localized planet label"
+        )
+        saw_planet = true
+      elseif name == storage.a.name then
+        assert_equal(labels[index], "Custom source", "Custom surface label")
+        saw_custom = true
+      elseif name == storage.platform.surface.name then
+        assert_equal(labels[index], storage.platform.name, "Platform label")
+        saw_platform = true
+      end
+    end
+    assert(saw_planet and saw_custom and saw_platform, "All surface kinds appear in requester GUI")
+    -- Clear the route filter so provider labels exercise planet names as well.
+    remote.call("iln-gui-test", "open", player.index, storage.batch.requester)
+    frame = assert(player.gui.relative.iln_requester)
+    local found = false
+    for index, unit in ipairs(frame.iln_provider.tags.providers) do
+      if unit == planet_provider.unit_number then
+        assert_equal(
+          helpers.table_to_json(frame.iln_provider.items[index][2]),
+          helpers.table_to_json(planet_surface.planet.prototype.localised_name),
+          "Localized planet provider label"
+        )
+        found = true
+      end
+    end
+    assert(found, "Planet provider appears in requester GUI")
+    frame.destroy()
+    log "ILN GUI PASS: planet, custom surface, platform and provider labels"
+  else
+    log "ILN GUI SKIP: use --save with an existing player for GUI regression checks"
+  end
   log "ILN integration setup complete"
 end
 
@@ -210,7 +257,10 @@ script.on_init(function()
   game.speed = 1000
 end)
 
+local first_tick
 script.on_event(defines.events.on_tick, function(event)
+  first_tick = first_tick or event.tick
+  event = { tick = event.tick - first_tick + 1 }
   if event.tick > 30 and storage.platform and not storage.platform_requester then
     local entity = storage.platform.surface.find_entity("interplanetary-requester-chest", { 8.5, 8.5 })
     if entity then

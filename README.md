@@ -194,6 +194,8 @@ Format with `stylua . --config-path stylua.toml` and lint with
 
 ```sh
 python3 tests/run.py /path/to/factorio --power normal --stacks 3 --rocket 5
+# Also open the requester GUI using an offline player in an isolated save copy:
+python3 tests/run.py /path/to/factorio --save /path/to/save.zip
 ```
 
 The runner uses disposable directories and accelerated simulation ticks. It does
