@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.3
+Date: 2026.10.24
+  Graphics:
+    - Replaced the square provider and requester artwork with rounded futuristic Blender models.
+    - Added updated 64-frame idle and active animations, emission layers, shadows and inventory icons.
+    - Updated the mod thumbnail to feature the new machines.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.2
 Date: 2026.10.21
   Fixes:
