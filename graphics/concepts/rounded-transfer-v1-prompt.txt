@@ -1,0 +1,22 @@
+Generated with the built-in imagegen tool. Concept art only.
+
+Use case: stylized-concept
+Asset type: art-direction concept sheet for the two existing Factorio mod Interplanetary Logistics Network logistics machines.
+Primary request: redesign the provider and requester assets to be substantially less square and more futuristic. Create a beautiful, confident professional game production concept sheet, with two large, clearly separated, fully visible machinery studies. Wide landscape composition, approximately 3:2. High detail but bold readable silhouettes.
+
+Input images: first two reference images are the EXISTING provider and requester sprites, reference only for function, relative scale and role colors. The third image is the old thumbnail, reference only for the fact these are paired interplanetary cargo transfer endpoints. Design NEW machinery. Do not reproduce the old square chassis.
+
+Design language: circular and teardrop footprints, sculpted flowing armored shells, toroidal electromagnetic collars, curved negative spaces, swept ribs, recessed radial cargo apertures, thin luminous conduits embedded in real manufactured assemblies. Compact industrial future technology, grounded in Factorio's tactile mechanical world but visibly more advanced. A strongly rounded silhouette must be immediately evident even as a small game sprite. No square slab under the curved machine. No box with softened corners. Think sophisticated magnetic cargo transfer equipment rather than a crate.
+
+LEFT: the PROVIDER, oxide-red enamel armor and warm amber core. A compact round-bodied sending machine on three short curved integrated feet, six swept petal-like armor segments surrounding a deeply recessed circular cargo well. A partially open elevated toroidal focusing collar on curved ribs, visually directs energy UP AND OUT from the well. Visible copper induction coils, dark titanium inner structure, small cyan coolant conduits, functional service seams. Controlled amber emission, the physical shape remains clear.
+
+RIGHT: the REQUESTER, muted olive-green enamel armor and lime-green core. Same family, scale, material vocabulary and footprint, but visibly a receiving machine: low open concave bowl with curved segmented catcher petals, an inset bright receiving ring and a compact crescent-shaped rear stabilizer. Energy visually curls DOWN AND IN toward its recessed well. Asymmetry in rear service hardware for character. Round chassis and short swept feet, no rectangular plinth.
+
+Each endpoint occupies about a 3x3 Factorio tile footprint and remains compatible visually with belt/inserter access. Mid-sized machinery, not giant portals, starships or buildings. Grounded feet, credible mechanical joinery, accessible maintenance. Refined restrained wear on material edges, no scrap pile. Clear functional distinction without relying on text alone.
+
+Style/medium: outstanding finished industrial sci-fi game concept painting with precise rendered material definition, like a premium art director's production design plate. Orthographic three-quarter top-down game view around 50 degrees elevation, consistent viewpoint and scale for both machines. Soft key light from upper left. Excellent crisp silhouettes and controlled shadows. Dark neutral graphite studio background, faint ground plane only, generous breathing room, no busy environment. Materials are rich dark titanium, brushed steel, enamel role colors and copper, limited luminous accents. Avoid sterile glossy white consumer appliances, excessive neon bloom, square pads, generic factory boxes, tanks, weapons, scattered objects, humans, planets, arrows between machines, watermark.
+
+Composition: two impressive large hero studies take the upper 75% of the sheet. Along the bottom, four small clean supplementary state thumbnails: provider idle, provider active, requester idle, requester active. Same exact machinery in these thumbnail states, with iris opening and contained light changing, not new designs. Keep any technical lines minimal. Editorial typography small and tasteful.
+
+Text (verbatim): title "INTERPLANETARY LOGISTICS NETWORK"; subtitle "ROUNDED TRANSFER SYSTEMS"; left machine label "PROVIDER / TX"; right machine label "REQUESTER / RX"; bottom state labels "IDLE", "ACTIVE", "IDLE", "ACTIVE". No other text.
+Constraints: complete assets visible, no cropping. Preserve provider red/amber and requester olive/lime roles. Radically replace the square design with curving integrated machinery, both unmistakably built as a coherent family.

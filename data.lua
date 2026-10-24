@@ -9,7 +9,7 @@ data:extend {
   {
     type = "container",
     name = "interplanetary-provider-chest",
-    icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-player", "player-creation" },
     minable = { mining_time = 0.1, result = "interplanetary-provider-chest" },
@@ -41,7 +41,7 @@ data:extend {
     picture = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_shadow.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_shadow.png",
           width = 384,
           height = 256,
           shift = { 0, -0.5656854249492381 },
@@ -49,7 +49,7 @@ data:extend {
           draw_as_shadow = true,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_animation_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_animation_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -66,7 +66,7 @@ data:extend {
   {
     type = "simple-entity-with-force",
     name = "interplanetary-provider-animation-idle",
-    icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     max_health = 1,
@@ -80,7 +80,7 @@ data:extend {
     animations = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_animation_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_animation_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -91,7 +91,7 @@ data:extend {
           animation_speed = 0.5,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_emission_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_emission_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -112,7 +112,7 @@ data:extend {
   {
     type = "simple-entity-with-force",
     name = "interplanetary-provider-animation-active",
-    icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     max_health = 1,
@@ -126,7 +126,7 @@ data:extend {
     animations = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_animation_sheet_active.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_animation_sheet_active.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -137,7 +137,7 @@ data:extend {
           animation_speed = 1.0,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/provider_emission_sheet_active.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_emission_sheet_active.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -160,7 +160,7 @@ data:extend {
     logistic_mode = "buffer",
     render_not_in_network_icon = false,
     name = "interplanetary-requester-chest",
-    icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-player", "player-creation" },
     minable = { mining_time = 0.1, result = "interplanetary-requester-chest" },
@@ -191,7 +191,7 @@ data:extend {
     picture = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_shadow.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_shadow.png",
           width = 384,
           height = 256,
           shift = { 0, -0.5656854249492381 },
@@ -199,7 +199,7 @@ data:extend {
           draw_as_shadow = true,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_animation_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_animation_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -216,7 +216,7 @@ data:extend {
   {
     type = "simple-entity-with-force",
     name = "interplanetary-requester-animation-idle",
-    icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     max_health = 1,
@@ -230,7 +230,7 @@ data:extend {
     animations = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_animation_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_animation_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -241,7 +241,7 @@ data:extend {
           animation_speed = 0.5,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_emission_sheet_idle.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_emission_sheet_idle.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -262,7 +262,7 @@ data:extend {
   {
     type = "simple-entity-with-force",
     name = "interplanetary-requester-animation-active",
-    icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     max_health = 1,
@@ -276,7 +276,7 @@ data:extend {
     animations = {
       layers = {
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_animation_sheet_active.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_animation_sheet_active.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -287,7 +287,7 @@ data:extend {
           animation_speed = 1.0,
         },
         {
-          filename = "__interplanetary-logistics-network__/graphics/entities/requester_emission_sheet_active.png",
+          filename = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_emission_sheet_active.png",
           priority = "extra-high",
           width = 192,
           height = 256,
@@ -308,7 +308,7 @@ data:extend {
   {
     type = "item",
     name = "interplanetary-provider-chest",
-    icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_idle_icon.png",
     icon_size = 64,
     subgroup = "logistic-network",
     order = "b[storage]-c[interplanetary-provider-chest]",
@@ -319,7 +319,7 @@ data:extend {
   {
     type = "item",
     name = "interplanetary-requester-chest",
-    icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_idle_icon.png",
     icon_size = 64,
     subgroup = "logistic-network",
     order = "b[storage]-d[interplanetary-requester-chest]",
@@ -436,7 +436,7 @@ data:extend {
   {
     type = "electric-energy-interface",
     name = "interplanetary-provider-power-interface",
-    icon = "__interplanetary-logistics-network__/graphics/entities/provider_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/provider_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     collision_mask = { layers = {} },
@@ -469,7 +469,7 @@ data:extend {
   {
     type = "electric-energy-interface",
     name = "interplanetary-requester-power-interface",
-    icon = "__interplanetary-logistics-network__/graphics/entities/requester_idle_icon.png",
+    icon = "__interplanetary-logistics-network__/graphics/entities/rounded-v1/requester_idle_icon.png",
     icon_size = 64,
     flags = { "placeable-off-grid", "not-on-map", "not-deconstructable" },
     collision_mask = { layers = {} },

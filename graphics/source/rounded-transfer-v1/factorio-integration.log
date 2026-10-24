@@ -1,0 +1,76 @@
+   0.000 2026-10-24 13:01:22; Factorio 2.1.21 (build 87673, mac-arm64, steam, space-age)
+   0.006 Operating system: macOS 27.2.0
+   0.006 Program arguments: "/Users/luan/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents/MacOS/factorio" "--config" "/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m/config.ini" "--mod-directory" "/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m/mods" "--start-server-load-scenario" "integration" "--server-settings" "/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m/server.json" "--bind" "127.0.0.1" "--port" "0" "--until-tick" "3601" "--disable-audio"
+   0.006 Config path: /private/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m/config.ini
+   0.006 Read data path: /Users/luan/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents/data
+   0.006 Write data path: /private/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m [62290/471482MB]
+   0.006 Binaries path: /Users/luan/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents
+   0.146 System info: [CPU: arm64, 14 cores, RAM: 49152 MB]
+   0.189 Running in headless mode
+   0.189 Audio is disabled
+   0.195 Info ModManager.cpp:450: FeatureFlag expansion = true
+   0.195 Info ModManager.cpp:450: FeatureFlag expansion-shaders = true
+   0.195 Info ModManager.cpp:450: FeatureFlag freezing = true
+   0.195 Info ModManager.cpp:450: FeatureFlag quality = true
+   0.195 Info ModManager.cpp:450: FeatureFlag rail-bridges = true
+   0.195 Info ModManager.cpp:450: FeatureFlag segmented-units = true
+   0.195 Info ModManager.cpp:450: FeatureFlag space-travel = true
+   0.195 Info ModManager.cpp:450: FeatureFlag spoiling = true
+   0.199 Loading mod settings interplanetary-logistics-network 0.4.1 (settings.lua)
+   0.200 Loading mod settings iln-integration-tests 1.0.0 (settings-updates.lua)
+   0.205 Loading mod core 0.0.0 (data.lua)
+   0.225 Loading mod base 2.1.21 (data.lua)
+   0.499 Loading mod elevated-rails 2.1.21 (data.lua)
+   0.550 Loading mod recycler 2.1.21 (data.lua)
+   0.574 Loading mod quality 2.1.21 (data.lua)
+   0.587 Loading mod space-age 2.1.21 (data.lua)
+   1.375 Loading mod interplanetary-logistics-network 0.4.1 (data.lua)
+   1.390 Loading mod base 2.1.21 (data-updates.lua)
+   1.407 Loading mod recycler 2.1.21 (data-updates.lua)
+   1.428 Loading mod space-age 2.1.21 (data-updates.lua)
+   1.440 Loading mod interplanetary-logistics-network 0.4.1 (data-updates.lua)
+   1.506 Checksum for core: 2791302773
+   1.506 Checksum of base: 1834856243
+   1.506 Checksum of elevated-rails: 1429039930
+   1.506 Checksum of recycler: 3293728126
+   1.506 Checksum of quality: 3330349790
+   1.506 Checksum of space-age: 652283608
+   1.506 Checksum of interplanetary-logistics-network: 1747100394
+   1.506 Checksum of iln-integration-tests: 2652536496
+   1.864 Prototype list checksum: 725154206
+   1.909 Info PlayerData.cpp:566: Cloud player-data.json unavailable
+   1.910 Info PlayerData.cpp:582: Local player-data.json unavailable
+   1.930 Info GlobalContext.cpp:1336: Resetting config.
+   1.931 Factorio initialised
+   1.934 Info ServerSynchronizer.cpp:22: nextHeartbeatSequenceNumber(0) initialized Synchronizer nextTickClosureTick(0).
+   1.934 Info ServerMultiplayerManager.cpp:809: updateTick(18446744073709551615) changing state from(Ready) to(PreparedToHostGame)
+   1.934 Info ServerMultiplayerManager.cpp:809: updateTick(18446744073709551615) changing state from(PreparedToHostGame) to(CreatingGame)
+   1.948 Blueprint storage "blueprint-storage-2.dat" was not found, trying to load previous version storage "blueprint-storage.dat"
+   2.638 Loading level.dat: 1038253 bytes.
+   2.638 Info Scenario.cpp:152: Map version 2.1.21-11
+   2.664 Blueprint storage "blueprint-storage-2.dat" was not found, trying to load previous version storage "blueprint-storage.dat"
+   2.665 Checksum for script __level__/control.lua: 3144447293
+   2.670 Checksum for script __interplanetary-logistics-network__/control.lua: 2095082687
+   2.672 Info UDPSocket.cpp:38: Opening socket at (IP ADDR:({127.0.0.1:0}))
+   2.672 Hosting game at IP ADDR:({127.0.0.1:0})
+   2.672 Info ServerMultiplayerManager.cpp:809: updateTick(0) changing state from(CreatingGame) to(InGame)
+   2.672 Info CommandLineMultiplayer.cpp:297: Maximum segment size = 100; minimum segment size = 25; maximum-segment-size peer count = 10; minimum-segment-size peer count = 20
+   3.264 Script @__level__/control.lua:206: ILN integration setup complete
+   5.427 Script @__level__/control.lua:357: ILN metered energy: 3199999.921875 J; expected 3200000 J
+   5.427 Script @__level__/control.lua:358: ILN INTEGRATION PASS: quality, partial stacks, concurrent requests, reservations, forces, routes, sections, metadata, platforms, cleanup, circuits
+   5.427 Received SIGTERM, shutting down
+   5.427 Error InterruptibleStdioStream.cpp:72: Got EOF on stdin; closing
+   5.428 Quitting: signal.
+   5.428 Info MainLoop.cpp:433: Saving map as /private/var/folders/34/d56xc1dx60zdlmpn6559r40w0000gn/T/iln-tests-yojnge8m/saves/integration
+   5.441 Info MainLoop.cpp:444: Saving progress: 0.090171%
+   5.459 Info MainLoop.cpp:444: Saving progress: 100.000000%
+   5.465 Info ServerMultiplayerManager.cpp:120: Disconnecting multiplayer connection.
+   5.465 Info ServerMultiplayerManager.cpp:809: updateTick(3601) changing state from(InGame) to(DisconnectingScheduled)
+   5.503 Info ServerMultiplayerManager.cpp:809: updateTick(3601) changing state from(DisconnectingScheduled) to(Disconnecting)
+   5.537 Info ServerMultiplayerManager.cpp:809: updateTick(3601) changing state from(Disconnecting) to(Disconnected)
+   5.537 Info ServerMultiplayerManager.cpp:147: Quitting multiplayer connection.
+   5.537 Info ServerMultiplayerManager.cpp:809: updateTick(3601) changing state from(Disconnected) to(Closed)
+   5.537 Info ServerMultiplayerManager.cpp:167: Deleting active scenario (global = true).
+   5.599 Info UDPSocket.cpp:238: Closing socket
+   5.599 Info UDPSocket.cpp:268: Socket closed
+   5.648 Goodbye
