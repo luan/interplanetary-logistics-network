@@ -6,7 +6,7 @@ Pillow only packs, downsamples, and makes review previews; Blender supplies all 
 from pathlib import Path
 import hashlib
 import json
-from PIL import Image, ImageChops, ImageFilter, ImageDraw
+from PIL import Image, ImageChops, ImageDraw
 
 ROOT=Path(__file__).resolve().parent
 DEST=ROOT.parent.parent/'entities'/'rounded-v1'
@@ -57,12 +57,23 @@ for role in ['provider','requester']:
     icon.paste(crop,((256-crop.width)//2,(256-crop.height)//2))
     icon.save(DEST/f'{role}_idle_icon_big.png',optimize=True)
     icon.resize((64,64),Image.Resampling.LANCZOS).save(DEST/f'{role}_idle_icon.png',optimize=True)
-    silhouette=Image.open(ROOT/'raw'/f'{role}-shadow.png').convert('RGBA').resize((384,256),Image.Resampling.LANCZOS)
-    coverage=silhouette.getchannel('A').filter(ImageFilter.GaussianBlur(1.15)).point(lambda v:round(v*.38))
+    silhouette=Image.open(ROOT/'raw'/f'{role}-shadow.png').getchannel('A')
+    clear=Image.open(ROOT/'raw'/f'{role}-shadow-clear.png').getchannel('A')
+    # Remove the receiver's unoccluded matte. A one-step PNG rounding difference
+    # is transparent; native sun penumbra supplies softness at actual contacts.
+    coverage=Image.new('L',silhouette.size)
+    coverage.putdata([0 if a-b<=1 or b==255 else round((a-b)*255/(255-b)) for a,b in zip(silhouette.tobytes(),clear.tobytes())])
+    coverage=coverage.resize((384,256),Image.Resampling.LANCZOS).point(lambda v:round(v*.55))
     shadow=Image.new('RGBA',(384,256))
     shadow.putalpha(coverage)
+    box=shadow.getbbox()
+    if not box or box[0]<2 or box[1]<2 or box[2]>382 or box[3]>254:raise RuntimeError(f'Clipped or empty shadow: {role}: {box}')
     shadow.save(DEST/f'{role}_shadow.png',optimize=True)
-    all_frames[role]=[im.resize(CELL,Image.Resampling.LANCZOS) for im in combined]
+    all_frames[role]=[]
+    for b,e in zip(body,emission):
+        frame=ImageChops.add(b.convert('RGB'),e.convert('RGB'))
+        frame.putalpha(b.getchannel('A'))
+        all_frames[role].append(frame)
     reports[role]={'frames':128,'unique_idle_frames':len({im.tobytes() for im in emission[:64]}),'unique_active_frames':len({im.tobytes() for im in emission[64:]}),'min_margin_px':min(min(a,b,192-c,256-d) for a,b,c,d in boxes),'body_bounds_union':[min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes)],'shadow_bbox':shadow.getbbox()}
 
 labels=['PROVIDER / IDLE','PROVIDER / ACTIVE','REQUESTER / IDLE','REQUESTER / ACTIVE']
@@ -71,12 +82,20 @@ for f in range(64):
     page=Image.new('RGB',(768,288),'#252c34')
     draw=ImageDraw.Draw(page)
     for col,(role,offset) in enumerate([('provider',0),('provider',64),('requester',0),('requester',64)]):
-        frame=all_frames[role][offset+f]
-        page.paste(frame,(col*192,20),frame)
+        tile=Image.new('RGBA',(192,256),'#555e58')
+        grid=ImageDraw.Draw(tile)
+        for x in range(0,192,32):grid.line((x,0,x,256),fill='#647066')
+        for y in range(12,256,32):grid.line((0,y,192,y),fill='#647066')
+        grid.rectangle((48,92,144,188),outline='#e0bd65')
+        shadow=Image.open(DEST/f'{role}_shadow.png').convert('RGBA').resize((240,160),Image.Resampling.LANCZOS)
+        frame=all_frames[role][offset+f].resize((120,160),Image.Resampling.LANCZOS)
+        tile.alpha_composite(shadow,(-24,60))
+        tile.alpha_composite(frame,(36,60))
+        page.paste(tile.convert('RGB'),(col*192,0))
         draw.text((col*192+12,268),labels[col],fill='#d9dcd8')
     previews.append(page)
 previews[0].save(ROOT/'native-sprite-preview.png')
 previews[0].save(ROOT/'animation-preview.gif',save_all=True,append_images=previews[1:],duration=30,loop=0,disposal=2)
-manifest={'blender_version':'5.2.3 LTS','source':'rounded-transfer-v1.blend','source_sha256':hashlib.sha256((ROOT/'rounded-transfer-v1.blend').read_bytes()).hexdigest(),'cell':[192,256],'grid':[8,8],'frames_per_state':64,'idle_animation_speed':.5,'active_animation_speed':1,'pixels_per_tile':51.2,'anchor':[96,156.9630937574],'factorio_scale':.625,'factorio_shift':[0,-.5656854249492381],'shadow_size':[384,256],'export_notes':'Blender-authored body with direct emission subtracted in linear space; separate additive emission; supersampled 2x and downsampled with alpha-aware Lanczos. Animation preview GIF is slowed for inspection. Not a captured in-game screenshot.','validation':reports,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(DEST.glob('*.png'))}}
+manifest={'blender_version':'5.2.3 LTS','source':'rounded-transfer-v1.blend','source_sha256':hashlib.sha256((ROOT/'rounded-transfer-v1.blend').read_bytes()).hexdigest(),'cell':[192,256],'grid':[8,8],'frames_per_state':64,'idle_animation_speed':.5,'active_animation_speed':1,'pixels_per_tile':51.2,'anchor':[96,128],'factorio_scale':.625,'factorio_shift':[0,0],'shadow_size':[384,256],'shadow_method':'Cycles shadow catcher with matching body sun, ground datum and pixel density','export_notes':'Blender-authored body with direct emission subtracted in linear space; separate additive emission; supersampled 2x and downsampled with alpha-aware Lanczos. Animation preview GIF is slowed for inspection. Not a captured in-game screenshot.','validation':reports,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(DEST.glob('*.png'))}}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(json.dumps({'files':len(manifest['files']),'output':str(DEST),'validation':reports},indent=2))

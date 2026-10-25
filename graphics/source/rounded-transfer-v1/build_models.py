@@ -335,11 +335,11 @@ def setup_scene(name,coll,size=(768,1024)):
     light(name+' upper left key',studio,(-3,-4,7),(0,0,.5),650,4,(1,.88,.74))
     light(name+' cool fill',studio,(4,-1,4),(0,0,.6),420,3,(.64,.80,1))
     light(name+' rear rim',studio,(0,4,5),(0,0,.8),750,3,(.88,.94,1))
-    scene.camera=camera(name+' orthographic camera',studio,(0,-6,7.15),(0,0,.69),4.66)
+    scene.camera=camera(name+' orthographic camera',studio,(0,-6,6),(0,0,0),5)
     scene['sprite_cell']=[192,256]
     scene['sprite_grid']=[8,8]
     scene['factorio_scale']=.625
-    scene['factorio_shift']=[0,-.5656854249492381]
+    scene['factorio_shift']=[0,0]
     return scene
 
 provider=make_machine('provider')
@@ -374,6 +374,6 @@ reference=bpy.data.images.load(str(ROOT.parent.parent/'concepts'/'rounded-transf
 reference.pack()
 reference['role']='Approved visual design reference; not used as model geometry or render output.'
 notes=bpy.data.texts.new('README - ILN rounded machines')
-notes.write('Two editable radial machines modelled from rounded-transfer-v1.png.\nProvider/Requester scenes hold the original named meshes; Presentation uses collection instances.\nFrames 1-64: idle. Frames 65-128: active. Parametric animation uses drivers, with no external handlers.\nAll geometry, procedural materials and the packed concept reference are self-contained.\nSprite cell 192x256, 8x8 sheet, scale .625, shift (0,-.5656854249492381).\n')
+notes.write('Two editable radial machines modelled from rounded-transfer-v1.png.\nProvider/Requester scenes hold the original named meshes; Presentation uses collection instances.\nFrames 1-64: idle. Frames 65-128: active. Parametric animation uses drivers, with no external handlers.\nAll geometry, procedural materials and the packed concept reference are self-contained.\nSprite cell 192x256, 8x8 sheet, scale .625, shift (0,0).\n')
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'rounded-transfer-v1.blend'))
 result={'file':bpy.data.filepath,'provider_objects':len(provider.objects),'requester_objects':len(requester.objects),'scenes':[tx_scene.name,rx_scene.name,show.name],'concept_packed':reference.packed_file is not None}

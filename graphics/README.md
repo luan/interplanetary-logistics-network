@@ -17,15 +17,19 @@ editable geometry. Existing scenes were preserved during authoring.
 Frames 1–64 are idle; 65–128 are active. Drivers animate the scanning iris and
 transport rings without external handlers. TX rings move upward; RX rings move
 downward. The separate body and precolored additive emission sheets have the
-same 192×256 cells, 8×8 grid, `.625` scale and vertical shift as the prior assets.
-The orthographic camera uses 51.2 pixels per tile and a fixed native anchor of
-`(96, 156.9630937574)`. Shadows are 384×256, projected from the evaluated model
-geometry and softened during packing. The world footprint remains 3×3 tiles.
+same 192×256 cells, 8×8 grid and `.625` scale as the prior assets. The ground
+origin is at the image center, with zero prototype shift. The body camera uses
+51.2 pixels per metre and a native anchor of `(96, 128)`. The wider 384×256
+shadow uses the same pixel density and an anchor of `(192, 128)`.
+Shadows are rendered in Cycles from the actual model onto a ground catcher,
+using the same down-right sun direction as the body. Packing removes the
+unoccluded receiver matte and retains the sun's native penumbra. The feet are
+grounded at z=0. The world footprint remains 3×3 tiles.
 
 To reproduce the models in an empty Blender file, execute `build_models.py`,
 then `refine_models.py` from the source directory. Execute `export_sprites.py`,
 then render animation for the Provider and Requester scenes. Execute
-`export_shadows.py`, then render each Shadow scene. Finally run:
+`export_shadows.py` to render the shadow and clear receiver passes. Finally run:
 
 ```sh
 uv run --with pillow python graphics/source/rounded-transfer-v1/pack_sprites.py
@@ -34,8 +38,20 @@ uv run --with pillow python graphics/source/rounded-transfer-v1/pack_sprites.py
 Blender supplies every rendered pixel. Pillow downsamples the 2× renders,
 packs the sheets and makes review previews. `manifest.json` records dimensions,
 frame counts, clipping checks and SHA-256 hashes. The preview GIF is slowed for
-inspection; `native-sprite-preview.png` shows the actual sprite size. These are
-Blender previews, not screenshots from Factorio.
+inspection; `native-sprite-preview.png` composites the exported layers and
+shadows at default game scale. These are offline previews, not screenshots
+from Factorio.
+
+Run `tests/graphics_projection.py` inside Blender with the model loaded to check
+the ground anchor, both cameras' tile scale, shadow direction and all foot
+contacts. `projection-check.json` records the result. To compare the published
+0.4.3 artwork with the current exports on the same placement grid, run:
+
+```sh
+uv run --with pillow python graphics/source/rounded-transfer-v1/preview_grounding.py
+```
+
+The output is `source/rounded-transfer-v1/grounding-preview.png`.
 
 Source files and concept art are excluded from mod release archives.
 

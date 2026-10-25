@@ -15,9 +15,36 @@ for f in list(bpy.app.handlers.render_pre):
 
 for role in ['provider','requester']:
     s=bpy.data.scenes['ILN - '+role.title()]
-    s.camera.location=(0,-6,6.8)
-    s.camera.rotation_euler=(Vector((0,0,.8))-s.camera.location).to_track_quat('-Z','Y').to_euler()
+    bpy.context.window.scene=s
+    s.frame_set(1)
+    collection=bpy.data.collections['ILN / '+('PROVIDER TX' if role=='provider' else 'REQUESTER RX')]
+    datum_name='ILN / '+role+' ground datum'
+    datum=bpy.data.objects.get(datum_name)
+    if datum is None:
+        datum=bpy.data.objects.new(datum_name,None)
+        collection.objects.link(datum)
+        for obj in list(collection.objects):
+            if obj is not datum and obj.parent is None:obj.parent=datum
+    s.view_layers[0].update()
+    graph=bpy.context.evaluated_depsgraph_get()
+    contact=[]
+    for obj in collection.objects:
+        if 'swept armor' not in obj.name:continue
+        evaluated=obj.evaluated_get(graph)
+        mesh=evaluated.to_mesh()
+        contact.extend((evaluated.matrix_world@v.co).z for v in mesh.vertices)
+        evaluated.to_mesh_clear()
+    datum.location.z-=min(contact)
+    # The image center is the ground datum; prototypes use zero shift.
+    s.camera.location=(0,-6,6)
+    s.camera.rotation_euler=(Vector((0,0,0))-s.camera.location).to_track_quat('-Z','Y').to_euler()
     s.camera.data.ortho_scale=5
+    key=next(o for o in s.objects if o.type=='LIGHT' and 'upper left key' in o.name)
+    key.data.type='SUN'
+    key.data.energy=2.5
+    key.data.angle=.06
+    key.location=(-3,4,7)
+    key.rotation_euler=(Vector((0,0,.5))-key.location).to_track_quat('-Z','Y').to_euler()
     s.render.resolution_x=384
     s.render.resolution_y=512
     s.render.resolution_percentage=100
@@ -64,8 +91,9 @@ for role in ['provider','requester']:
     out=nodes.new('NodeGroupOutput')
     links.new(layer.outputs['Image'],out.inputs['Image'])
     s['pixels_per_tile']=51.2
-    s['anchor_native_px']=[96,156.9630937574]
+    s['anchor_native_px']=[96,128]
+    s['factorio_shift']=[0,0]
     s.frame_set(1)
 
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'rounded-transfer-v1.blend'))
-result={'configured':['provider','requester'],'frames_per_role':128,'raw_cell':[384,512],'final_cell':[192,256],'anchor':[96,156.9630937574]}
+result={'configured':['provider','requester'],'frames_per_role':128,'raw_cell':[384,512],'final_cell':[192,256],'anchor':[96,128]}

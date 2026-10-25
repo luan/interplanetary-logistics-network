@@ -1,7 +1,7 @@
 {
   "blender_version": "5.2.3 LTS",
   "source": "rounded-transfer-v1.blend",
-  "source_sha256": "3a5917f95ec7b151dcfac47c729ea18dc44582de144930eb5a112985c6643737",
+  "source_sha256": "d2a28732b5aa5b09298fff033097e1e15157df9aa6b848e3cc160f42ecf9e162",
   "cell": [
     192,
     256
@@ -16,79 +16,73 @@
   "pixels_per_tile": 51.2,
   "anchor": [
     96,
-    156.9630937574
+    128
   ],
   "factorio_scale": 0.625,
   "factorio_shift": [
     0,
-    -0.5656854249492381
+    0
   ],
   "shadow_size": [
     384,
     256
   ],
+  "shadow_method": "Cycles shadow catcher with matching body sun, ground datum and pixel density",
   "export_notes": "Blender-authored body with direct emission subtracted in linear space; separate additive emission; supersampled 2x and downsampled with alpha-aware Lanczos. Animation preview GIF is slowed for inspection. Not a captured in-game screenshot.",
   "validation": {
     "provider": {
       "frames": 128,
-      "unique_idle_frames": 21,
+      "unique_idle_frames": 2,
       "unique_active_frames": 64,
       "min_margin_px": 15,
       "body_bounds_union": [
         15,
-        55,
+        28,
         177,
-        199
+        172
       ],
       "shadow_bbox": [
-        74,
-        73,
-        344,
-        240
+        112,
+        65,
+        289,
+        207
       ]
     },
     "requester": {
       "frames": 128,
-      "unique_idle_frames": 19,
+      "unique_idle_frames": 3,
       "unique_active_frames": 64,
       "min_margin_px": 15,
       "body_bounds_union": [
         15,
-        61,
+        34,
         177,
-        199
+        172
       ],
       "shadow_bbox": [
-        74,
-        75,
-        332,
-        240
+        112,
+        65,
+        282,
+        191
       ]
-    },
-    "animation_loop_max_transform_error": 1.7484555314695172e-07
+    }
   },
   "files": {
-    "provider_animation_sheet_active.png": "eef5a0af91621cd8c68cf248f36f6ef6bb9ba5a20e2c0547294b50310ae7fe5b",
-    "provider_animation_sheet_idle.png": "248937d8051aa19f22e403c5088cadd042889f99edf6dd36790f8bc3623b0172",
-    "provider_emission_sheet_active.png": "d2a418e85620def008e8ad3db16854a789c82350170ee386aa2757845dca8c27",
-    "provider_emission_sheet_idle.png": "92cce63c106bfa2503a43af561d8240d89be264a6542004ca9ec0f4483f753a5",
-    "provider_idle_icon.png": "212475334c025347424cb694d2c5109bc772772fb3e0de76332ea459d71020e1",
-    "provider_idle_icon_big.png": "9488f06b6056f43b6154eb98c4944a042cb1c89abc76e0157b333fe3f3c2e08e",
-    "provider_shadow.png": "e594efa5005ddc1cc9a6f20398598ad824db76e3f2c670496a882bf8cb3eadb0",
-    "requester_animation_sheet_active.png": "8633835e634016982118ae191a87e3317c6bf6912e4cd9aca799e702e0dc0426",
-    "requester_animation_sheet_idle.png": "926a497253cd78f3d4fd7de704a86da07d7e78b35d2d2370dcdd55aa7f75b56e",
-    "requester_emission_sheet_active.png": "58fb70866aa40b3e01e63ad887be17afb2b4303312ef4a626239964b7ab0e899",
-    "requester_emission_sheet_idle.png": "920922eebf08aaab71aec48852ead6ee5582fa6b6212ed35dead6198e2ede5e1",
-    "requester_idle_icon.png": "57bd15c05c02a42b9a2ba1de83f1012b6c41ae9eb7b5d2614e095e2734db5693",
-    "requester_idle_icon_big.png": "704ad4e8223515061a544331ef809b06ac4ca539de4a0f8743813c85e5e6339a",
-    "requester_shadow.png": "88658770fd10b5898ab53ff5246d8666ad33766d428f06b1081c4ed91e953b72"
+    "provider_animation_sheet_active.png": "2ddb45fc24b9fc40666102e661bb7308644cdf87b7ac6b022fce1359a31da597",
+    "provider_animation_sheet_idle.png": "e23b52dcbc94bf8643ec8a2a1ee68d039f5bbb70a9d42287636fc7313d5d5c90",
+    "provider_emission_sheet_active.png": "96bdb34f9a8771efda3ed6de45475d5b2cbd054ef5a8b20ff7b585a3591531e3",
+    "provider_emission_sheet_idle.png": "2325c6b34e36f48f7ffcf298c76f345e6e7f2b2b2c9aff0cfad683831f4e4c08",
+    "provider_idle_icon.png": "a979c6e0e9f2145f83ee9c88230eb874fe354cce9a1c70d716e90d3da7df088d",
+    "provider_idle_icon_big.png": "e5d31cb540d76400604a1e0a136b0fd86d7fdb8dca57719efaf4af418927e8f5",
+    "provider_shadow.png": "fb26055bc0186514c21a046f16c8c0c93a9a4df4c2a7ace2a56ce4d0b268c6c5",
+    "requester_animation_sheet_active.png": "21008a3ce5860cd6d6882831b6b5d1130b0c778df08e291fc304a12492900e46",
+    "requester_animation_sheet_idle.png": "91b54b27153ebc046e5a9eee1e6a9832287685ae6494f32673f78e6615de4675",
+    "requester_emission_sheet_active.png": "edf7694c9947ded89f73eb1fb4888699b0619369e91e6ce9d3c9cd961af1662b",
+    "requester_emission_sheet_idle.png": "4a710728a6633f087e95c08fb6e19a5a9853e6dccb5d088e32164144d3deff3f",
+    "requester_idle_icon.png": "5fe6beb0c9abee362454e4edb9298fd110f40dab46fbbac7aceb4796a34ebd15",
+    "requester_idle_icon_big.png": "727d0666597a1a85c5590d459b9ec7011a902daf7579bfa4144d900006aa73dd",
+    "requester_shadow.png": "5fe21b383dd35355708217ddfaf2285fd11ec2b5d79ea35abc4048b500336edb"
   },
-  "factorio_validation": {
-    "version": "2.1.21",
-    "result": "ILN INTEGRATION PASS",
-    "log": "factorio-integration.log",
-    "visual_in_game_review": false,
-    "base_commit": "1eb8397",
-    "scope": "Earlier sprite integration run, before the published 0.4.2 requester-label fix was fast-forwarded. No game was launched during release preparation."
-  }
+  "projection_check": "projection-check.json",
+  "visual_review": "Offline composition of the exported body, emission and shadow PNGs at default game scale. No Factorio process launched."
 }
