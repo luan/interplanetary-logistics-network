@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.4
+Date: 2026.10.25
+  Graphics:
+    - Fixed oversized, offset shadows that made the transfer machines appear to float.
+    - Grounded the feet and aligned body, emission and shadow sprites to a shared origin.
+    - Replaced flattened silhouettes with down-right cast shadows and ground contact.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.3
 Date: 2026.10.24
   Graphics:
