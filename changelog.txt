@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.7
+Date: 2026.10.25
+  Graphics:
+    - Moved machine artwork 18 pixels south to center it vertically inside the selection rectangle.
+    - Applied the same offset to body, glow and shadow layers while preserving the original artwork, proportions and viewing angle.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.6
 Date: 2026.10.25
   Graphics:
