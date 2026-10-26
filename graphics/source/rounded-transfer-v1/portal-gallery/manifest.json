@@ -1,122 +1,92 @@
 {
   "version": "0.4.7",
-  "provenance": "Blender renders of the existing model with the existing sprite cameras and proportions. Only output resolution was increased. No model saved and no Factorio process started.",
-  "render_source": {
-    "source_sha256": "d2a28732b5aa5b09298fff033097e1e15157df9aa6b848e3cc160f42ecf9e162",
-    "scenes": {
-      "provider": {
-        "camera_matrix": [
-          [
-            1.0,
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.7071067690849304,
-            -0.7071067690849304,
-            -6.0
-          ],
-          [
-            0.0,
-            0.7071067690849304,
-            0.7071067690849304,
-            6.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "ortho_scale": 5.0,
-        "frames": {
-          "idle": 1,
-          "active": 65
-        }
+  "factorio_version": "2.1.23",
+  "provenance": "Unedited screenshots written by the graphical Factorio client using game.take_screenshot",
+  "package_sha1": "201ab23e8d72a43ba363ceafe610e19c05b43b0e",
+  "capture_directory": "/Users/luan/Library/Caches/iln-game-gallery-v168zksa",
+  "scenario_sha256": "911d7e225044a755d4b675cb024dd0eb75ebe5e605b34659fb4f4cc0c9d87129",
+  "capture_receipt": {
+    "factorio": "2.1.23",
+    "mod": "0.4.7",
+    "provenance": "Unedited screenshots written by the graphical Factorio client using game.take_screenshot",
+    "captures": {
+      "01-machines": {
+        "tick": 600,
+        "zoom": 1.4,
+        "show_gui": false,
+        "requester_circuits": 348,
+        "remote_received_iron": 200,
+        "active_animation_helpers": 2
       },
-      "requester": {
-        "camera_matrix": [
-          [
-            1.0,
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.7071067690849304,
-            -0.7071067690849304,
-            -6.0
-          ],
-          [
-            0.0,
-            0.7071067690849304,
-            0.7071067690849304,
-            6.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "ortho_scale": 5.0,
-        "frames": {
-          "idle": 1,
-          "active": 65
-        }
+      "02-provider": {
+        "tick": 660,
+        "zoom": 2.1,
+        "show_gui": false,
+        "requester_circuits": 340,
+        "remote_received_iron": 200,
+        "active_animation_helpers": 2
+      },
+      "03-requester": {
+        "tick": 780,
+        "zoom": 1.5,
+        "show_gui": true,
+        "requester_circuits": 524,
+        "remote_received_iron": 300,
+        "active_animation_helpers": 2
       }
     }
   },
   "images": {
     "01-machines.png": {
-      "sha1": "03083149589c77048557b2eac2cb1c40b46bf16e",
+      "sha1": "28d2052bfa39b34c4c5f718afa212bbecb1b10e5",
+      "sha256": "b6f9e4343c45e77fa5e33c9a297b9267e3362d71cffe115cf480e3d381ecd083",
       "size": [
-        1200,
-        1200
-      ]
+        1600,
+        1000
+      ],
+      "original": "/Users/luan/Library/Caches/iln-game-gallery-v168zksa/script-output/gallery/01-machines.png"
     },
     "02-provider.png": {
-      "sha1": "92844a8ef274ff6649c03890c0d1b8d7388d5217",
+      "sha1": "f726847c972c9663a1acbc8286ba0a8275276746",
+      "sha256": "78b7f1a8f06ad18143078c8062177bcb0b0a577c9376a9fa4282ff0dcaccd20d",
       "size": [
-        1200,
-        1200
-      ]
+        1600,
+        1000
+      ],
+      "original": "/Users/luan/Library/Caches/iln-game-gallery-v168zksa/script-output/gallery/02-provider.png"
     },
     "03-requester.png": {
-      "sha1": "a3ccb2d7435ca4d473595309dccc8d3739671d5b",
+      "sha1": "2afc6ea43bfb409dbc003833d78228e4864ed44c",
+      "sha256": "fec69fd77ca822a38acf33b2bd8a376e1a5815a5f818fde1eafe8d5e60ea5286",
       "size": [
-        1200,
-        1200
-      ]
+        3200,
+        2000
+      ],
+      "original": "/Users/luan/Library/Caches/iln-game-gallery-v168zksa/script-output/gallery/03-requester.png"
     }
   },
   "portal_gallery": "https://mods.factorio.com/mod/interplanetary-logistics-network",
   "portal_images": {
     "01-machines.png": {
-      "id": "03083149589c77048557b2eac2cb1c40b46bf16e",
-      "url": "https://assets-mod.factorio.com/assets/03083149589c77048557b2eac2cb1c40b46bf16e.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/03083149589c77048557b2eac2cb1c40b46bf16e.thumb.png",
+      "id": "28d2052bfa39b34c4c5f718afa212bbecb1b10e5",
+      "url": "https://assets-mod.factorio.com/assets/28d2052bfa39b34c4c5f718afa212bbecb1b10e5.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/28d2052bfa39b34c4c5f718afa212bbecb1b10e5.thumb.png",
       "published_pixels_identical": true,
-      "public_png_sha1": "92e977190d4f09c151ffbc42f28d555577f96dd6"
+      "public_png_sha1": "f4d637a626fd73a5c2a32a53c6c138c3709a27d9"
     },
     "02-provider.png": {
-      "id": "92844a8ef274ff6649c03890c0d1b8d7388d5217",
-      "url": "https://assets-mod.factorio.com/assets/92844a8ef274ff6649c03890c0d1b8d7388d5217.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/92844a8ef274ff6649c03890c0d1b8d7388d5217.thumb.png",
+      "id": "f726847c972c9663a1acbc8286ba0a8275276746",
+      "url": "https://assets-mod.factorio.com/assets/f726847c972c9663a1acbc8286ba0a8275276746.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/f726847c972c9663a1acbc8286ba0a8275276746.thumb.png",
       "published_pixels_identical": true,
-      "public_png_sha1": "fa1004d361fe462ce6b009f0d8b0979908a8faf9"
+      "public_png_sha1": "a9cd029bfb232007a12fc064079f7a2a915d6a4b"
     },
     "03-requester.png": {
-      "id": "a3ccb2d7435ca4d473595309dccc8d3739671d5b",
-      "url": "https://assets-mod.factorio.com/assets/a3ccb2d7435ca4d473595309dccc8d3739671d5b.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/a3ccb2d7435ca4d473595309dccc8d3739671d5b.thumb.png",
+      "id": "2afc6ea43bfb409dbc003833d78228e4864ed44c",
+      "url": "https://assets-mod.factorio.com/assets/2afc6ea43bfb409dbc003833d78228e4864ed44c.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/2afc6ea43bfb409dbc003833d78228e4864ed44c.thumb.png",
       "published_pixels_identical": true,
-      "public_png_sha1": "59b5b68f88a2fe85a9e37b19e3979ecf4b1bb0df"
+      "public_png_sha1": "b4af9bc561a1da04f4a1f5e926ac3733732ee602"
     }
   }
 }
