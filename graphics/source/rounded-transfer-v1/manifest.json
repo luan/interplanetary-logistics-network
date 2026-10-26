@@ -21,7 +21,7 @@
   "factorio_scale": 0.625,
   "factorio_shift": [
     0,
-    0
+    0.5625
   ],
   "shadow_size": [
     384,
@@ -84,7 +84,7 @@
     "requester_shadow.png": "5fe21b383dd35355708217ddfaf2285fd11ec2b5d79ea35abc4048b500336edb"
   },
   "projection_check": "projection-check.json",
-  "visual_review": "Original 0.4.4 source model and all 14 runtime PNGs restored byte-for-byte. Offline preview uses fixed selection footprint and entity origin; logical footprint does not determine model proportions. No Factorio process launched.",
+  "visual_review": "Every body, glow and shadow layer uses the same 18px southward prototype offset. All 256 visible body frames fit vertically inside the fixed selection rectangle. Blender model and all 14 runtime PNG files are unchanged from 0.4.6. Offline PNG composition; no Factorio process launched.",
   "placement_footprint_tiles": [
     3,
     3

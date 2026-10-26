@@ -1,4 +1,4 @@
-"""Compare shipped 0.4.5 and current PNG placement without starting Factorio.
+"""Compare shipped 0.4.6 and current PNG placement without starting Factorio.
 
 Run with uv run --with pillow python preview_grounding.py.
 Uses actual sprite scale/shift from each revision's data.lua, not Blender's
@@ -14,7 +14,7 @@ ROOT=Path(__file__).resolve().parents[3]
 OUT=Path(__file__).resolve().parent
 
 def read(path,before):
-    if before:return subprocess.check_output(['git','show','v0.4.5:'+path],cwd=ROOT)
+    if before:return subprocess.check_output(['git','show','v0.4.6:'+path],cwd=ROOT)
     return (ROOT/path).read_bytes()
 
 def image(path,before):
@@ -42,7 +42,7 @@ def composite(role,before):
         offset=(round(cx-size[0]/2+shift[0]),round(cy-size[1]/2+shift[1]))
         tile.alpha_composite(layer,offset)
     draw_footprint(ImageDraw.Draw(tile),role,read('data.lua',before).decode(),(cx,cy))
-    ImageDraw.Draw(tile).text((12,12),role.upper()+(' / 0.4.5' if before else ' / RESTORED'),fill='white')
+    ImageDraw.Draw(tile).text((12,12),role.upper()+(' / 0.4.6' if before else ' / ALIGNED'),fill='white')
     return tile.convert('RGB')
 
 if __name__=='__main__':

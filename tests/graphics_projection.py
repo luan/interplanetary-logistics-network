@@ -38,12 +38,15 @@ def check_projections():
     # Factorio's square grid has physical Y spacing sqrt(2) at a 45-degree camera.
     # https://factorio.com/blog/post/fff-133
     points={'origin':(0,0,0),'east_tile':(1,0,0),'south_tile':(0,-math.sqrt(2),0)}
-    expected={'origin':Vector((0,0)),'east_tile':Vector((32,0)),'south_tile':Vector((0,32))}
     for role,label in [('provider','PROVIDER TX'),('requester','REQUESTER RX')]:
         body=bpy.data.scenes['ILN - '+role.title()]
         shadow=bpy.data.scenes['ILN - '+role.title()+' Shadow']
         body_spec=sprite_parameters(role+'_animation_sheet_idle.png')
         shadow_spec=sprite_parameters(role+'_shadow.png')
+        origin=Vector((body_spec[3][0]*32,body_spec[3][1]*32))
+        expected={'origin':origin,'east_tile':origin+Vector((32,0)),'south_tile':origin+Vector((0,32))}
+        if shadow_spec[3]!=body_spec[3]:
+            failures.append(role+' body and shadow placement shifts differ')
         for tail in ['animation_sheet_active.png','emission_sheet_idle.png','emission_sheet_active.png']:
             if sprite_parameters(role+'_'+tail)!=body_spec:
                 failures.append(role+' '+tail+' does not align with the idle body')

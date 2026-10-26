@@ -39,7 +39,7 @@ for role in ['provider','requester']:
         contact.extend((evaluated.matrix_world@v.co).z for v in mesh.vertices)
         evaluated.to_mesh_clear()
     datum.location.z-=min(contact)
-    # The image center is the ground datum; prototypes use zero shift.
+    # Keep the render's ground datum; placement is a shared prototype shift.
     s.camera.location=(0,-6,6)
     s.camera.rotation_euler=(Vector((0,0,0))-s.camera.location).to_track_quat('-Z','Y').to_euler()
     s.camera.data.ortho_scale=5
@@ -100,7 +100,7 @@ for role in ['provider','requester']:
     links.new(layer.outputs['Image'],out.inputs['Image'])
     s['pixels_per_tile']=51.2
     s['anchor_native_px']=[96,128]
-    s['factorio_shift']=[0,0]
+    s['factorio_shift']=[0,.5625]
     s.frame_set(1)
 
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'rounded-transfer-v1.blend'))
