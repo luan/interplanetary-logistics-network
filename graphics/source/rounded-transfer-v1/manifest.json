@@ -1,7 +1,7 @@
 {
   "blender_version": "5.2.3 LTS",
   "source": "rounded-transfer-v1.blend",
-  "source_sha256": "fe8e400b7150177ddb18fe6e71bf39e9ad694c805b65c708fe90b4af5d957277",
+  "source_sha256": "d2a28732b5aa5b09298fff033097e1e15157df9aa6b848e3cc160f42ecf9e162",
   "cell": [
     192,
     256
@@ -32,65 +32,61 @@
   "validation": {
     "provider": {
       "frames": 128,
-      "unique_idle_frames": 5,
+      "unique_idle_frames": 2,
       "unique_active_frames": 64,
-      "min_margin_px": 25,
+      "min_margin_px": 15,
       "body_bounds_union": [
-        25,
-        26,
-        167,
-        192
+        15,
+        28,
+        177,
+        172
       ],
       "shadow_bbox": [
-        122,
-        58,
-        282,
-        226
+        112,
+        65,
+        289,
+        207
       ]
     },
     "requester": {
       "frames": 128,
-      "unique_idle_frames": 5,
+      "unique_idle_frames": 3,
       "unique_active_frames": 64,
-      "min_margin_px": 25,
+      "min_margin_px": 15,
       "body_bounds_union": [
-        25,
-        31,
-        167,
-        192
+        15,
+        34,
+        177,
+        172
       ],
       "shadow_bbox": [
-        122,
-        58,
-        273,
-        210
+        112,
+        65,
+        282,
+        191
       ]
     }
   },
   "files": {
-    "provider_animation_sheet_active.png": "5f22c7bd690389e7ad54e492d0975894895b7a2bac87ee493b19bb776be8172d",
-    "provider_animation_sheet_idle.png": "69f4d281c3e676d1d0fd06987eda1a4c0b5fbf81e0cd414fb19b2e8262850700",
-    "provider_emission_sheet_active.png": "aab8006e56234f093968835d8e6592c20eabacf989a9c42430c9d1f407d4fccd",
-    "provider_emission_sheet_idle.png": "2e9f99348acd7c1c13def540eb67dc93b4aa0c9b046b329bdb6b176649334617",
-    "provider_idle_icon.png": "b174f1e1490738687c4175f48c4e39a9f25638de332dfc8b1f1184ee1b3d893a",
-    "provider_idle_icon_big.png": "e84f9001ae0a899bb3ef57d7c34f2173a160b06239aed7b81e52269b2306ef85",
-    "provider_shadow.png": "bbb96d2c53e9aaaf4fff53b8e5f88bccf7ea7a4dd86ac598d414bbc70b6c52e7",
-    "requester_animation_sheet_active.png": "9c9e14b6b8cd128e8d07c222038a0d94040db99b9b09ab29ab4efb4c708f48ad",
-    "requester_animation_sheet_idle.png": "20c714e43bfde0a7147e767f1de5dbe043fabbf3320dcfa55dc2c830d6d9cabd",
-    "requester_emission_sheet_active.png": "702c06c43dec5fbd36f0791e471a96926f08a3785b80f043b1502eddfa5d1995",
-    "requester_emission_sheet_idle.png": "93091691f025c901f6c5e8d4b02d7d8bdd6e9524637665b8d4f62f718b2f9854",
-    "requester_idle_icon.png": "b055eca8ca47f03dfa3469881cd11bd05852b645d83f7fbcf5cbb380770bae77",
-    "requester_idle_icon_big.png": "288cf0fae737abe5d2ae69f7275f1b9664bd3c2901a45a63e79125a2255392e3",
-    "requester_shadow.png": "07a2266aaa2bd9182f77dfe8f8105c39f9f920e6a74ff1ce30e0c588be48e7f7"
+    "provider_animation_sheet_active.png": "2ddb45fc24b9fc40666102e661bb7308644cdf87b7ac6b022fce1359a31da597",
+    "provider_animation_sheet_idle.png": "e23b52dcbc94bf8643ec8a2a1ee68d039f5bbb70a9d42287636fc7313d5d5c90",
+    "provider_emission_sheet_active.png": "96bdb34f9a8771efda3ed6de45475d5b2cbd054ef5a8b20ff7b585a3591531e3",
+    "provider_emission_sheet_idle.png": "2325c6b34e36f48f7ffcf298c76f345e6e7f2b2b2c9aff0cfad683831f4e4c08",
+    "provider_idle_icon.png": "a979c6e0e9f2145f83ee9c88230eb874fe354cce9a1c70d716e90d3da7df088d",
+    "provider_idle_icon_big.png": "e5d31cb540d76400604a1e0a136b0fd86d7fdb8dca57719efaf4af418927e8f5",
+    "provider_shadow.png": "fb26055bc0186514c21a046f16c8c0c93a9a4df4c2a7ace2a56ce4d0b268c6c5",
+    "requester_animation_sheet_active.png": "21008a3ce5860cd6d6882831b6b5d1130b0c778df08e291fc304a12492900e46",
+    "requester_animation_sheet_idle.png": "91b54b27153ebc046e5a9eee1e6a9832287685ae6494f32673f78e6615de4675",
+    "requester_emission_sheet_active.png": "edf7694c9947ded89f73eb1fb4888699b0619369e91e6ce9d3c9cd961af1662b",
+    "requester_emission_sheet_idle.png": "4a710728a6633f087e95c08fb6e19a5a9853e6dccb5d088e32164144d3deff3f",
+    "requester_idle_icon.png": "5fe6beb0c9abee362454e4edb9298fd110f40dab46fbbac7aceb4796a34ebd15",
+    "requester_idle_icon_big.png": "727d0666597a1a85c5590d459b9ec7011a902daf7579bfa4144d900006aa73dd",
+    "requester_shadow.png": "5fe21b383dd35355708217ddfaf2285fd11ec2b5d79ea35abc4048b500336edb"
   },
   "projection_check": "projection-check.json",
+  "visual_review": "Original 0.4.4 source model and all 14 runtime PNGs restored byte-for-byte. Offline preview uses fixed selection footprint and entity origin; logical footprint does not determine model proportions. No Factorio process launched.",
   "placement_footprint_tiles": [
     3,
     3
-  ],
-  "model_floor_envelope_tiles": [
-    2.65,
-    2.65
-  ],
-  "visual_review": "Offline composition of exported body, emission and shadow PNGs at the prototype scale and shift. Yellow is the fixed selection footprint and entity origin, independent of visible sprite bounds. No Factorio process launched."
+  ]
 }

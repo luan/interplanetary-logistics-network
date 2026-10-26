@@ -88,20 +88,11 @@ def check_projections():
         shadow_bounds=[min(p.x for p in shadow_floor),min(p.y for p in shadow_floor),max(p.x for p in shadow_floor),max(p.y for p in shadow_floor)]
         report[role]['shadow_caster_floor_bounds_px']=shadow_bounds
         if max(abs(a-b) for a,b in zip(bounds,shadow_bounds))>.02:
-            failures.append(role+' shadow caster does not match the fitted model base')
-        # A centered base must fit the real collider in both tile axes. Height
-        # projects above this floor box; it must not move the placement guide.
-        prototype=(ROOT/'data.lua').read_text().split(f'name = "interplanetary-{role}-chest",',1)[1]
-        box=re.search(r'collision_box = \{ \{ ([^,]+), ([^}]+) \}, \{ ([^,]+), ([^}]+) \} \}',prototype)
-        collider=[float(v)*32 for v in box.groups()]
-        for axis in range(2):
-            lo,hi=bounds[axis],bounds[axis+2]
-            if lo<collider[axis]-.1 or hi>collider[axis+2]+.1:
-                failures.append(f'{role} base axis {axis}: {lo:.2f}..{hi:.2f}px exceeds collision footprint')
-            if hi-lo<.9*(collider[axis+2]-collider[axis]):
-                failures.append(f'{role} base axis {axis}: {hi-lo:.2f}px leaves more than 10% of collision footprint unused')
-            if abs(lo+hi)>.5:
-                failures.append(f'{role} base axis {axis}: center {(lo+hi)/2:.2f}px is offset from placement origin')
+            failures.append(role+' shadow caster does not match the model base')
+        datum=bpy.data.objects['ILN / '+role+' ground datum']
+        report[role]['model_root_scale']=list(datum.scale)
+        if max(datum.scale)-min(datum.scale)>.0001:
+            failures.append(role+' root scale distorts the authored view; use uniform model proportions')
         contacts=[]
         for index in range(1,4):
             foot=next(o for o in bpy.data.collections['ILN / '+label].objects if o.name==label+f' landing foot {index} swept armor')

@@ -76,7 +76,6 @@ manifest={'blender_version':'5.2.3 LTS','source':'rounded-transfer-v1.blend','so
 manifest.update({
     'projection_check':'projection-check.json',
     'placement_footprint_tiles':[3,3],
-    'model_floor_envelope_tiles':[2.65,2.65],
     'visual_review':'Offline composition of exported body, emission and shadow PNGs at the prototype scale and shift. Yellow is the fixed selection footprint and entity origin, independent of visible sprite bounds. No Factorio process launched.',
 })
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
