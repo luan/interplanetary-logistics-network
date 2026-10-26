@@ -1,4 +1,5 @@
 .DS_Store
+__pycache__/
 /graphics/source/rounded-transfer-v1/raw/
 /graphics/source/rounded-transfer-v1/*.blend[0-9]
 /graphics/source/rounded-transfer-v1/model-preview-v[12].png

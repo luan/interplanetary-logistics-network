@@ -2,13 +2,14 @@
 
 Run with uv run --with pillow python preview_grounding.py.
 Uses actual sprite scale/shift from each revision's data.lua, not Blender's
-presentation camera. The yellow square is the 3x3-tile placement footprint.
+presentation camera. Yellow guides follow the visible machine, excluding shadow.
 """
 from pathlib import Path
 from io import BytesIO
 import re
 import subprocess
 from PIL import Image, ImageChops, ImageDraw
+from preview_sprites import draw_visual_guide
 
 ROOT=Path(__file__).resolve().parents[3]
 OUT=Path(__file__).resolve().parent
@@ -34,7 +35,6 @@ def composite(role,before):
     cx,cy=148,135
     for x in range(cx%32,320,32):draw.line((x,0,x,256),fill='#647066')
     for y in range(cy%32,256,32):draw.line((0,y,320,y),fill='#647066')
-    draw.rectangle((cx-48,cy-48,cx+48,cy+48),outline='#e0bd65')
     prefix='graphics/entities/rounded-v1/'+role
     body=image(prefix+'_animation_sheet_idle.png',before).crop((0,0,192,256))
     emission=image(prefix+'_emission_sheet_idle.png',before).crop((0,0,192,256))
@@ -45,13 +45,16 @@ def composite(role,before):
         scale,shift=params(filename,before)
         size=tuple(round(n*scale) for n in layer.size)
         layer=layer.resize(size,Image.Resampling.LANCZOS)
-        tile.alpha_composite(layer,(round(cx-size[0]/2+shift[0]),round(cy-size[1]/2+shift[1])))
+        offset=(round(cx-size[0]/2+shift[0]),round(cy-size[1]/2+shift[1]))
+        tile.alpha_composite(layer,offset)
+    draw_visual_guide(ImageDraw.Draw(tile),layer,offset)
     ImageDraw.Draw(tile).text((12,12),role.upper()+(' / 0.4.3' if before else ' / CORRECTED'),fill='white')
     return tile.convert('RGB')
 
-page=Image.new('RGB',(640,540),'#343c3c')
-for row,role in enumerate(['provider','requester']):
-    for col,before in enumerate([True,False]):page.paste(composite(role,before),(col*320,row*256))
-ImageDraw.Draw(page).text((12,521),'Offline PNG composition at default game scale. Yellow: 3x3 footprint.',fill='#eeeeee')
-page.save(OUT/'grounding-preview.png')
-print(OUT/'grounding-preview.png')
+if __name__=='__main__':
+    page=Image.new('RGB',(640,540),'#343c3c')
+    for row,role in enumerate(['provider','requester']):
+        for col,before in enumerate([True,False]):page.paste(composite(role,before),(col*320,row*256))
+    ImageDraw.Draw(page).text((12,521),'Yellow: visible machine bounds. Shadows excluded. Offline PNG composition.',fill='#eeeeee')
+    page.save(OUT/'grounding-preview.png')
+    print(OUT/'grounding-preview.png')
