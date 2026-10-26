@@ -40,7 +40,7 @@ for role in ['provider','requester']:
 def machine(page,role,state,center):
     # Raw gallery renders are four times the exported sprite resolution.
     # Use the current prototype scale and shift, including shadow registration.
-    zoom=5.2
+    zoom=4.8
     body=Image.open(RAW/f'{role}-{state}.png').convert('RGBA')
     for name,layer in [(role+'_shadow.png',shadows[role]),(role+'_animation_sheet_'+state+'.png',body)]:
         scale,shift=sprite_params(name,PROTOTYPES)
@@ -50,23 +50,24 @@ def machine(page,role,state,center):
         page.alpha_composite(layer,(round(center[0]-size[0]/2+shift[0]*zoom),round(center[1]-size[1]/2+shift[1]*zoom)))
 
 def poster(filename,title,subtitle,entries):
-    page=Image.new('RGBA',(1600,1000),'#242c30')
+    # Square output keeps the portal's square thumbnail crop faithful.
+    page=Image.new('RGBA',(1200,1200),'#242c30')
     draw=ImageDraw.Draw(page)
     # A restrained neutral grid supplies a common floor without fake gameplay.
-    for x in range(68,1600,166):draw.line((x,228,x,916),fill='#2e393d')
-    for y in range(250,916,166):draw.line((64,y,1536,y),fill='#2e393d')
-    draw.line((800,260,800,874),fill='#445052',width=1)
-    text(draw,(80,58),title,62,bold=True)
-    text(draw,(84,143),subtitle,28,fill=MUTED)
+    for x in range(50,1200,125):draw.line((x,250,x,1085),fill='#2e393d')
+    for y in range(300,1085,125):draw.line((50,y,1150,y),fill='#2e393d')
+    draw.line((600,300,600,1060),fill='#445052',width=1)
+    text(draw,(60,55),title,46,bold=True)
+    text(draw,(62,120),subtitle,24,fill=MUTED)
     for index,(role,state,label) in enumerate(entries):
-        cx=400+index*800
-        machine(page,role,state,(cx,528))
+        cx=300+index*600
+        machine(page,role,state,(cx,620))
         draw=ImageDraw.Draw(page)
-        draw.rounded_rectangle((cx-28,801,cx+28,806),radius=2,fill=ACCENT[role])
-        text(draw,(cx,833),label,31,fill=ACCENT[role],bold=True,anchor='mt')
-    draw.line((80,916,1520,916),fill='#4b5758')
-    text(draw,(80,945),'RENDERED ARTWORK PREVIEW',20,fill=MUTED,bold=True)
-    text(draw,(1520,945),'ILN '+VERSION+'  /  NOT AN IN-GAME CAPTURE',20,fill=MUTED,anchor='rt')
+        draw.rounded_rectangle((cx-22,895,cx+22,899),radius=2,fill=ACCENT[role])
+        text(draw,(cx,926),label,24,fill=ACCENT[role],bold=True,anchor='mt')
+    draw.line((60,1085,1140,1085),fill='#4b5758')
+    text(draw,(60,1125),'RENDERED ARTWORK PREVIEW',15,fill=MUTED,bold=True)
+    text(draw,(1140,1125),'ILN '+VERSION+'  /  NOT AN IN-GAME CAPTURE',15,fill=MUTED,anchor='rt')
     page.convert('RGB').save(OUT/filename,optimize=True)
 
 poster('01-machines.png','Interplanetary Logistics Network','Provider and requester machines',[

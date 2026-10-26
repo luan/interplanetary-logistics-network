@@ -74,49 +74,49 @@
   },
   "images": {
     "01-machines.png": {
-      "sha1": "5d804305ca575a49995339eda3166043008119d5",
+      "sha1": "03083149589c77048557b2eac2cb1c40b46bf16e",
       "size": [
-        1600,
-        1000
+        1200,
+        1200
       ]
     },
     "02-provider.png": {
-      "sha1": "f39abb71184769976d357b4d655f994024e3c6da",
+      "sha1": "92844a8ef274ff6649c03890c0d1b8d7388d5217",
       "size": [
-        1600,
-        1000
+        1200,
+        1200
       ]
     },
     "03-requester.png": {
-      "sha1": "6f48b25b0192a98af08f500be091e9d6ddce8683",
+      "sha1": "a3ccb2d7435ca4d473595309dccc8d3739671d5b",
       "size": [
-        1600,
-        1000
+        1200,
+        1200
       ]
     }
   },
   "portal_gallery": "https://mods.factorio.com/mod/interplanetary-logistics-network",
   "portal_images": {
     "01-machines.png": {
-      "id": "5d804305ca575a49995339eda3166043008119d5",
-      "url": "https://assets-mod.factorio.com/assets/5d804305ca575a49995339eda3166043008119d5.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/5d804305ca575a49995339eda3166043008119d5.thumb.png",
-      "public_png_sha1": "6d5f26491ba2f151fb91cdbbf1244720f9a492b9",
-      "published_pixels_identical": true
+      "id": "03083149589c77048557b2eac2cb1c40b46bf16e",
+      "url": "https://assets-mod.factorio.com/assets/03083149589c77048557b2eac2cb1c40b46bf16e.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/03083149589c77048557b2eac2cb1c40b46bf16e.thumb.png",
+      "published_pixels_identical": true,
+      "public_png_sha1": "92e977190d4f09c151ffbc42f28d555577f96dd6"
     },
     "02-provider.png": {
-      "id": "f39abb71184769976d357b4d655f994024e3c6da",
-      "url": "https://assets-mod.factorio.com/assets/f39abb71184769976d357b4d655f994024e3c6da.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/f39abb71184769976d357b4d655f994024e3c6da.thumb.png",
-      "public_png_sha1": "d6270fedb982fa99eeba1429b22c5786234d6395",
-      "published_pixels_identical": true
+      "id": "92844a8ef274ff6649c03890c0d1b8d7388d5217",
+      "url": "https://assets-mod.factorio.com/assets/92844a8ef274ff6649c03890c0d1b8d7388d5217.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/92844a8ef274ff6649c03890c0d1b8d7388d5217.thumb.png",
+      "published_pixels_identical": true,
+      "public_png_sha1": "fa1004d361fe462ce6b009f0d8b0979908a8faf9"
     },
     "03-requester.png": {
-      "id": "6f48b25b0192a98af08f500be091e9d6ddce8683",
-      "url": "https://assets-mod.factorio.com/assets/6f48b25b0192a98af08f500be091e9d6ddce8683.png",
-      "thumbnail": "https://assets-mod.factorio.com/assets/6f48b25b0192a98af08f500be091e9d6ddce8683.thumb.png",
-      "public_png_sha1": "8079d365a14ed35b70c3d04c70d372f1b30ae73a",
-      "published_pixels_identical": true
+      "id": "a3ccb2d7435ca4d473595309dccc8d3739671d5b",
+      "url": "https://assets-mod.factorio.com/assets/a3ccb2d7435ca4d473595309dccc8d3739671d5b.png",
+      "thumbnail": "https://assets-mod.factorio.com/assets/a3ccb2d7435ca4d473595309dccc8d3739671d5b.thumb.png",
+      "published_pixels_identical": true,
+      "public_png_sha1": "59b5b68f88a2fe85a9e37b19e3979ecf4b1bb0df"
     }
   }
 }
