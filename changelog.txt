@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.5
+Date: 2026.10.25
+  Graphics:
+    - Corrected machine base proportions and centering to fit the existing three-tile footprint.
+    - Regenerated provider and requester animations, shadows and inventory icons from the aligned Blender models.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.4
 Date: 2026.10.25
   Graphics:
