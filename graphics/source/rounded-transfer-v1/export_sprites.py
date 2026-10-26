@@ -5,6 +5,8 @@ Use pack_sprites.py after both sequences finish. No external Blender add-on is
 needed to reopen or edit the models; MCP is the authoring/control transport.
 """
 import bpy
+import math
+import re
 from pathlib import Path
 from mathutils import Vector
 
@@ -23,8 +25,32 @@ for role in ['provider','requester']:
     if datum is None:
         datum=bpy.data.objects.new(datum_name,None)
         collection.objects.link(datum)
-        for obj in list(collection.objects):
-            if obj is not datum and obj.parent is None:obj.parent=datum
+    for obj in list(collection.objects):
+        if obj is not datum and obj.parent is None:obj.parent=datum
+    # Fit the authored base to the actual collider, in Factorio's dimetric
+    # ground plane. One north/south tile is sqrt(2) Blender metres.
+    datum.scale=(1,1,1)
+    datum.location.x=0
+    datum.location.y=0
+    s.view_layers[0].update()
+    graph=bpy.context.evaluated_depsgraph_get()
+    points=[]
+    for obj in collection.all_objects:
+        if obj.type not in {'MESH','CURVE','FONT'} or obj.hide_render:continue
+        evaluated=obj.evaluated_get(graph)
+        mesh=evaluated.to_mesh()
+        if mesh is None:continue
+        points.extend(evaluated.matrix_world@v.co for v in mesh.vertices)
+        evaluated.to_mesh_clear()
+    low=[min(p[i] for p in points) for i in range(2)]
+    high=[max(p[i] for p in points) for i in range(2)]
+    prototype=(ROOT.parents[2]/'data.lua').read_text().split(f'name = "interplanetary-{role}-chest",',1)[1]
+    box=re.search(r'collision_box = \{ \{ ([^,]+), ([^}]+) \}, \{ ([^,]+), ([^}]+) \} \}',prototype)
+    x0,y0,x1,y1=map(float,box.groups())
+    scale=[(x1-x0-.05)/(high[0]-low[0]),(y1-y0-.05)*math.sqrt(2)/(high[1]-low[1])]
+    datum.scale=(scale[0],scale[1],1)
+    datum.location.x=(x0+x1)/2-(low[0]+high[0])/2*scale[0]
+    datum.location.y=-(y0+y1)/2*math.sqrt(2)-(low[1]+high[1])/2*scale[1]
     s.view_layers[0].update()
     graph=bpy.context.evaluated_depsgraph_get()
     contact=[]
@@ -57,10 +83,13 @@ for role in ['provider','requester']:
     s.frame_step=1
     s.render.filepath=str(ROOT/'raw'/role/'combined-')
     s.view_layers[0].use_pass_emit=True
-    group=bpy.data.node_groups.new('ILN / '+role+' body and additive emission','CompositorNodeTree')
+    group=s.compositing_node_group
+    if group is None:
+        group=bpy.data.node_groups.new('ILN / '+role+' body and additive emission','CompositorNodeTree')
     s.compositing_node_group=group
     s.use_nodes=True
     nodes=group.nodes
+    nodes.clear()
     links=group.links
     layer=nodes.new('CompositorNodeRLayers')
     layer.scene=s
@@ -87,7 +116,8 @@ for role in ['provider','requester']:
         output.save_as_render=True
         output.file_output_items.new('RGBA','Image')
         links.new(source,output.inputs['Image'])
-    group.interface.new_socket(name='Image',in_out='OUTPUT',socket_type='NodeSocketColor')
+    if not any(item.name=='Image' and item.in_out=='OUTPUT' for item in group.interface.items_tree):
+        group.interface.new_socket(name='Image',in_out='OUTPUT',socket_type='NodeSocketColor')
     out=nodes.new('NodeGroupOutput')
     links.new(layer.outputs['Image'],out.inputs['Image'])
     s['pixels_per_tile']=51.2

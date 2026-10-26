@@ -73,5 +73,11 @@ for role in ['provider','requester']:
 
 write_previews()
 manifest={'blender_version':'5.2.3 LTS','source':'rounded-transfer-v1.blend','source_sha256':hashlib.sha256((ROOT/'rounded-transfer-v1.blend').read_bytes()).hexdigest(),'cell':[192,256],'grid':[8,8],'frames_per_state':64,'idle_animation_speed':.5,'active_animation_speed':1,'pixels_per_tile':51.2,'anchor':[96,128],'factorio_scale':.625,'factorio_shift':[0,0],'shadow_size':[384,256],'shadow_method':'Cycles shadow catcher with matching body sun, ground datum and pixel density','export_notes':'Blender-authored body with direct emission subtracted in linear space; separate additive emission; supersampled 2x and downsampled with alpha-aware Lanczos. Animation preview GIF is slowed for inspection. Not a captured in-game screenshot.','validation':reports,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(DEST.glob('*.png'))}}
+manifest.update({
+    'projection_check':'projection-check.json',
+    'placement_footprint_tiles':[3,3],
+    'model_floor_envelope_tiles':[2.65,2.65],
+    'visual_review':'Offline composition of exported body, emission and shadow PNGs at the prototype scale and shift. Yellow is the fixed selection footprint and entity origin, independent of visible sprite bounds. No Factorio process launched.',
+})
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(json.dumps({'files':len(manifest['files']),'output':str(DEST),'validation':reports},indent=2))

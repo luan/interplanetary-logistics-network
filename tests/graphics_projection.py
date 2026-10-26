@@ -68,6 +68,40 @@ def check_projections():
         body.frame_set(1)
         body.view_layers[0].update()
         graph=bpy.context.evaluated_depsgraph_get()
+        floor_points=[]
+        for obj in bpy.data.collections['ILN / '+label].all_objects:
+            if obj.type not in {'MESH','CURVE','FONT'} or obj.hide_render:continue
+            evaluated=obj.evaluated_get(graph)
+            mesh=evaluated.to_mesh()
+            if mesh is None:continue
+            for vertex in mesh.vertices:
+                point=evaluated.matrix_world@vertex.co
+                floor_points.append(screen_point(body,body_spec,(point.x,point.y,0)))
+            evaluated.to_mesh_clear()
+        bounds=[min(p.x for p in floor_points),min(p.y for p in floor_points),max(p.x for p in floor_points),max(p.y for p in floor_points)]
+        report[role]['model_floor_bounds_px']=bounds
+        caster=next(o for o in shadow.objects if o.name.endswith('shadow caster'))
+        shadow_floor=[]
+        for vertex in caster.data.vertices:
+            point=caster.matrix_world@vertex.co
+            shadow_floor.append(screen_point(shadow,shadow_spec,(point.x,point.y,0)))
+        shadow_bounds=[min(p.x for p in shadow_floor),min(p.y for p in shadow_floor),max(p.x for p in shadow_floor),max(p.y for p in shadow_floor)]
+        report[role]['shadow_caster_floor_bounds_px']=shadow_bounds
+        if max(abs(a-b) for a,b in zip(bounds,shadow_bounds))>.02:
+            failures.append(role+' shadow caster does not match the fitted model base')
+        # A centered base must fit the real collider in both tile axes. Height
+        # projects above this floor box; it must not move the placement guide.
+        prototype=(ROOT/'data.lua').read_text().split(f'name = "interplanetary-{role}-chest",',1)[1]
+        box=re.search(r'collision_box = \{ \{ ([^,]+), ([^}]+) \}, \{ ([^,]+), ([^}]+) \} \}',prototype)
+        collider=[float(v)*32 for v in box.groups()]
+        for axis in range(2):
+            lo,hi=bounds[axis],bounds[axis+2]
+            if lo<collider[axis]-.1 or hi>collider[axis+2]+.1:
+                failures.append(f'{role} base axis {axis}: {lo:.2f}..{hi:.2f}px exceeds collision footprint')
+            if hi-lo<.9*(collider[axis+2]-collider[axis]):
+                failures.append(f'{role} base axis {axis}: {hi-lo:.2f}px leaves more than 10% of collision footprint unused')
+            if abs(lo+hi)>.5:
+                failures.append(f'{role} base axis {axis}: center {(lo+hi)/2:.2f}px is offset from placement origin')
         contacts=[]
         for index in range(1,4):
             foot=next(o for o in bpy.data.collections['ILN / '+label].objects if o.name==label+f' landing foot {index} swept armor')
