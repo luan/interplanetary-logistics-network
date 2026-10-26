@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.6
+Date: 2026.10.25
+  Graphics:
+    - Restored the original machine proportions and appearance from 0.4.4, undoing the distortion introduced in 0.4.5.
+    - Retained the ground contact and shadow corrections without forcing the artwork to fill a square footprint.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.5
 Date: 2026.10.25
   Graphics:
